@@ -1,4 +1,4 @@
-name: Release
+name: Build
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  release:
+  build:
     runs-on: windows-2025
     permissions:
       contents: write
