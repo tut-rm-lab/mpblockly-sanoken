@@ -122,7 +122,7 @@ export async function flashToPico(
 ): Promise<void> {
   const { path, cleanup } = await file();
   await writeFile(path, code, { encoding: 'utf-8' });
-  await runMpremote('cp', path, ':main.py');
+  await runMpremote('fs', 'cp', path, ':main.py');
   await runMpremote('reset');
   await cleanup();
 }
