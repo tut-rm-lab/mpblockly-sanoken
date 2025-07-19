@@ -1,0 +1,63 @@
+import { resolve } from 'node:path';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import {
+  closeWindow,
+  flashToPico,
+  openFile,
+  saveFile,
+  showConfirmDialog,
+  showErrorDialog,
+  showInfoDialog,
+  showOpenDialog,
+  showSaveDialog,
+} from './handlers.js';
+import { startViteServer } from './server.js';
+
+async function createWindow() {
+  const mainWindow = new BrowserWindow({
+    webPreferences: {
+      preload: resolve(import.meta.dirname, '../preload/index.cjs'),
+    },
+  });
+
+  mainWindow.setMenuBarVisibility(false);
+
+  if (app.isPackaged) {
+    mainWindow.loadFile(
+      resolve(import.meta.dirname, '../../dist-vite/index.html'),
+    );
+  } else {
+    mainWindow.loadURL(await startViteServer());
+  }
+
+  mainWindow.on('close', (event) => {
+    event.preventDefault();
+    mainWindow.webContents.send('before-close');
+  });
+}
+
+app.whenReady().then(() => {
+  ipcMain.handle('open-file', openFile);
+  ipcMain.handle('save-file', saveFile);
+  ipcMain.handle('show-open-dialog', showOpenDialog);
+  ipcMain.handle('show-save-dialog', showSaveDialog);
+  ipcMain.handle('show-info-dialog', showInfoDialog);
+  ipcMain.handle('show-error-dialog', showErrorDialog);
+  ipcMain.handle('show-confirm-dialog', showConfirmDialog);
+  ipcMain.handle('close-window', closeWindow);
+  ipcMain.handle('flash-to-pico', flashToPico);
+
+  createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
