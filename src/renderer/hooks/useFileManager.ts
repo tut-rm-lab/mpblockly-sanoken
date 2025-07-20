@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 import { ConfirmResponse } from '../../types/preload';
 
 interface FileManager {
-  openFile: (file: string) => Promise<string>;
-  saveFile: (file: string, data: string) => Promise<void>;
+  readFile: (file: string) => Promise<string>;
+  writeFile: (file: string, data: string) => Promise<void>;
   showOpenDialog: () => Promise<string | null>;
   showSaveDialog: () => Promise<string | null>;
   showConfirmDialog: () => Promise<ConfirmResponse>;
@@ -15,21 +15,21 @@ interface FileManager {
 
 export function useFileManager(fileManager: FileManager) {
   const pathRef = useRef<string>(null);
-  const textRef = useRef(fileManager.initialValue);
+  const dataRef = useRef(fileManager.initialValue);
 
   const saveAs = useCallback(async () => {
     const path = await fileManager.showSaveDialog();
     if (path == null) {
       return false;
     }
-    const workspaceJson = await fileManager.getLatestData();
-    await fileManager.saveFile(path, workspaceJson);
+    const data = await fileManager.getLatestData();
+    await fileManager.writeFile(path, data);
     pathRef.current = path;
-    textRef.current = workspaceJson;
+    dataRef.current = data;
     return true;
   }, [
     fileManager.showSaveDialog,
-    fileManager.saveFile,
+    fileManager.writeFile,
     fileManager.getLatestData,
   ]);
 
@@ -37,15 +37,15 @@ export function useFileManager(fileManager: FileManager) {
     if (pathRef.current == null) {
       return saveAs();
     }
-    const workspaceJson = await fileManager.getLatestData();
-    await fileManager.saveFile(pathRef.current, workspaceJson);
-    textRef.current = workspaceJson;
+    const data = await fileManager.getLatestData();
+    await fileManager.writeFile(pathRef.current, data);
+    dataRef.current = data;
     return true;
-  }, [saveAs, fileManager.saveFile, fileManager.getLatestData]);
+  }, [saveAs, fileManager.writeFile, fileManager.getLatestData]);
 
   const open = useCallback(async () => {
-    const workspaceJson = await fileManager.getLatestData();
-    if (workspaceJson !== textRef.current) {
+    const data = await fileManager.getLatestData();
+    if (data !== dataRef.current) {
       const response = await fileManager.showConfirmDialog();
       switch (response) {
         case ConfirmResponse.SAVE:
@@ -64,13 +64,13 @@ export function useFileManager(fileManager: FileManager) {
     if (path == null) {
       return;
     }
-    const newWorkspaceJson = await fileManager.openFile(path);
+    const newData = await fileManager.readFile(path);
     pathRef.current = path;
-    textRef.current = newWorkspaceJson;
-    return newWorkspaceJson;
+    dataRef.current = newData;
+    return newData;
   }, [
     save,
-    fileManager.openFile,
+    fileManager.readFile,
     fileManager.showConfirmDialog,
     fileManager.showOpenDialog,
     fileManager.getLatestData,
@@ -78,8 +78,8 @@ export function useFileManager(fileManager: FileManager) {
 
   useEffect(() => {
     const unsubscribe = fileManager.onBeforeClose(async () => {
-      const workspaceJson = await fileManager.getLatestData();
-      if (workspaceJson === textRef.current) {
+      const data = await fileManager.getLatestData();
+      if (data === dataRef.current) {
         await fileManager.closeWindow();
         return;
       }
