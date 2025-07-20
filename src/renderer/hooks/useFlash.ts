@@ -1,18 +1,9 @@
-import { pythonGenerator } from 'blockly/python';
-import { useAtomValue } from 'jotai';
 import { useCallback, useState } from 'react';
-import { blocklyWorkspaceAtom } from '../atoms';
 
 export function useFlash() {
-  const workspace = useAtomValue(blocklyWorkspaceAtom);
   const [flashing, setFlashing] = useState(false);
 
-  const flash = useCallback(async () => {
-    if (!workspace) {
-      return;
-    }
-    const code = pythonGenerator.workspaceToCode(workspace);
-    console.log(code);
+  const flash = useCallback(async (code: string) => {
     try {
       setFlashing(true);
       await window.electronAPI.flashToPico(code);
@@ -25,7 +16,7 @@ export function useFlash() {
     } finally {
       setFlashing(false);
     }
-  }, [workspace]);
+  }, []);
 
   return { flash, flashing };
 }

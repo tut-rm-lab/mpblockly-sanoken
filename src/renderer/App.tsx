@@ -8,9 +8,9 @@ import { useFileManager } from './hooks/useFileManager';
 import { useFlash } from './hooks/useFlash';
 
 export function App() {
-  const [code, setCode] = useState('');
   const workspaceRef = useRef<Blockly.WorkspaceSvg>(null);
   const [tabIndex, setTabIndex] = useState(0);
+  const [code, setCode] = useState('');
   const { open, save, saveAs } = useFileManager({
     readFile: window.electronAPI.openFile,
     writeFile: window.electronAPI.saveFile,
@@ -95,7 +95,9 @@ export function App() {
           <Button
             variant="contained"
             color="success"
-            onClick={flash}
+            onClick={async () => {
+              await flash(code);
+            }}
             disabled={flashing}
           >
             基板に書き込む
