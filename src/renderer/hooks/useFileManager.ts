@@ -10,12 +10,12 @@ interface FileManager {
   showSaveDialog: () => Promise<string | null>;
   showConfirmDialog: () => Promise<ConfirmResponse>;
   getLatestData: () => Promise<string>;
-  isDirty: (a: string | null, b: string) => boolean;
+  isDirty: (prev: string | null, cur: string) => boolean;
 }
 
 export function useFileManager(fileManager: FileManager) {
-  const pathRef = useRef<string>(null);
-  const dataRef = useRef<string>(null);
+  const prevPathRef = useRef<string>(null);
+  const prevDataRef = useRef<string>(null);
 
   const saveAs = useCallback(async () => {
     const path = await fileManager.showSaveDialog();
@@ -24,8 +24,8 @@ export function useFileManager(fileManager: FileManager) {
     }
     const data = await fileManager.getLatestData();
     await fileManager.writeFile(path, data);
-    pathRef.current = path;
-    dataRef.current = data;
+    prevPathRef.current = path;
+    prevDataRef.current = data;
     return true;
   }, [
     fileManager.showSaveDialog,
@@ -34,18 +34,18 @@ export function useFileManager(fileManager: FileManager) {
   ]);
 
   const save = useCallback(async () => {
-    if (pathRef.current == null) {
+    if (prevPathRef.current == null) {
       return saveAs();
     }
     const data = await fileManager.getLatestData();
-    await fileManager.writeFile(pathRef.current, data);
-    dataRef.current = data;
+    await fileManager.writeFile(prevPathRef.current, data);
+    prevDataRef.current = data;
     return true;
   }, [saveAs, fileManager.writeFile, fileManager.getLatestData]);
 
   const open = useCallback(async () => {
     const data = await fileManager.getLatestData();
-    if (await fileManager.isDirty(dataRef.current, data)) {
+    if (await fileManager.isDirty(prevDataRef.current, data)) {
       const response = await fileManager.showConfirmDialog();
       switch (response) {
         case ConfirmResponse.SAVE:
@@ -65,8 +65,8 @@ export function useFileManager(fileManager: FileManager) {
       return;
     }
     const newData = await fileManager.readFile(path);
-    pathRef.current = path;
-    dataRef.current = newData;
+    prevPathRef.current = path;
+    prevDataRef.current = newData;
     return newData;
   }, [
     save,
@@ -80,7 +80,7 @@ export function useFileManager(fileManager: FileManager) {
   useEffect(() => {
     const unsubscribe = fileManager.onExit(async () => {
       const data = await fileManager.getLatestData();
-      if (!(await fileManager.isDirty(dataRef.current, data))) {
+      if (!(await fileManager.isDirty(prevDataRef.current, data))) {
         await fileManager.exit();
         return;
       }

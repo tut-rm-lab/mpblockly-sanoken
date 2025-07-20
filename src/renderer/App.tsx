@@ -28,7 +28,7 @@ export function App() {
         Blockly.serialization.workspaces.save(workspaceRef.current),
       );
     },
-    isDirty: (a, b) => (a != null || b !== '{}') && a !== b,
+    isDirty: (prev, cur) => (prev != null || cur !== '{}') && prev !== cur,
   });
   const { flash, flashing } = useFlash();
 
