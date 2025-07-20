@@ -1,10 +1,10 @@
+import { Button, ButtonGroup, ScopedCssBaseline } from '@mui/material';
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
 import { useAtomValue } from 'jotai';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ConfirmResponse } from '../../types/preload';
 import { blocklyWorkspaceAtom } from '../atoms/blocklyWorkspace';
-import { Button } from './Button';
 
 const BLANK_WORKSPACE_JSON = JSON.stringify(
   Blockly.serialization.workspaces.save(new Blockly.Workspace()),
@@ -139,13 +139,19 @@ export function Header() {
   }, [workspace, save]);
 
   return (
-    <div style={{ display: 'flex', margin: 8, gap: 8 }}>
-      <Button onClick={open}>開く</Button>
-      <Button onClick={save}>上書き保存</Button>
-      <Button onClick={saveAs}>別名保存</Button>
-      <Button onClick={flash} disabled={flashing}>
-        Pico に書き込み
-      </Button>
-    </div>
+    <ScopedCssBaseline>
+      <ButtonGroup sx={{ margin: 1 }} variant="contained">
+        <Button onClick={open}>開く</Button>
+        <Button onClick={save}>上書き保存</Button>
+        <Button onClick={saveAs}>別名保存</Button>
+        <Button
+          sx={{ textTransform: 'none' }}
+          onClick={flash}
+          disabled={flashing}
+        >
+          Pico に書き込み
+        </Button>
+      </ButtonGroup>
+    </ScopedCssBaseline>
   );
 }

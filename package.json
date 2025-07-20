@@ -15,6 +15,11 @@
     "biome": "biome check"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/roboto": "^5.2.6",
+    "@mui/icons-material": "^7.2.0",
+    "@mui/material": "^7.2.0",
     "blockly": "^12.2.0",
     "jotai": "^2.12.5",
     "react": "^19.1.0",

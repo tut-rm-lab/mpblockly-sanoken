@@ -1,29 +1,24 @@
 import * as Blockly from 'blockly/core';
-import { useSetAtom } from 'jotai';
-import { useEffect, useRef } from 'react';
-import { blocklyWorkspaceAtom } from '../atoms/blocklyWorkspace';
+import { type RefCallback, useEffect, useRef } from 'react';
 
 interface BlocklyProps {
+  ref: RefCallback<Blockly.Workspace>;
   options: Blockly.BlocklyOptions;
 }
 
-export function BlocklyEditor({ options }: BlocklyProps) {
-  const setWorkspace = useSetAtom(blocklyWorkspaceAtom);
+export function BlocklyEditor({ ref, options }: BlocklyProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) {
       return;
     }
-
     const workspace = Blockly.inject(containerRef.current, options);
-    setWorkspace(workspace);
-
+    ref(workspace);
     return () => {
-      setWorkspace(undefined);
       workspace.dispose();
     };
-  }, [options, setWorkspace]);
+  }, [ref, options]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
