@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
 
-export function useFlash() {
-  const [flashing, setFlashing] = useState(false);
+export function useFlashToMicroPython() {
+  const [isFlashing, setIsFlashing] = useState(false);
 
   const flash = useCallback(async (code: string) => {
     try {
-      setFlashing(true);
+      setIsFlashing(true);
       await window.electronAPI.flashToMicroPython(code);
       await window.electronAPI.showInfoDialog('書き込みに成功しました');
     } catch (error) {
@@ -14,9 +14,9 @@ export function useFlash() {
         await window.electronAPI.showErrorDialog('書き込みに失敗しました');
       }
     } finally {
-      setFlashing(false);
+      setIsFlashing(false);
     }
   }, []);
 
-  return { flash, flashing };
+  return { flash, isFlashing };
 }

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import toolbox from './blockly';
 import { BlocklyEditor } from './components/BlocklyEditor';
 import { useFileManager } from './hooks/useFileManager';
-import { useFlash } from './hooks/useFlash';
+import { useFlashToMicroPython } from './hooks/useFlashToMicroPython';
 
 export function App() {
   const workspaceRef = useRef<Blockly.WorkspaceSvg>(null);
@@ -30,7 +30,7 @@ export function App() {
     showSaveDialog: window.electronAPI.showSaveDialog,
     showConfirmDialog: window.electronAPI.showConfirmDialog,
   });
-  const { flash, flashing } = useFlash();
+  const { flash, isFlashing } = useFlashToMicroPython();
 
   useEffect(() => {
     const workspace = workspaceRef.current;
@@ -97,7 +97,7 @@ export function App() {
             onClick={async () => {
               await flash(code);
             }}
-            disabled={flashing}
+            disabled={isFlashing}
           >
             基板に書き込む
           </Button>
