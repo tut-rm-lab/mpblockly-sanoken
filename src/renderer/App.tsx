@@ -1,12 +1,8 @@
-import type * as Blockly from 'blockly/core';
-import { useRef } from 'react';
 import toolbox from './blockly';
-import { ReactBlockly } from './components/ReactBlockly';
-import { Toolbar } from './components/Toolbar';
+import { BlocklyEditor } from './components/BlocklyEditor';
+import { Header } from './components/Header';
 
 export function App() {
-  const workspaceRef = useRef<Blockly.Workspace>(null);
-
   return (
     <div
       style={{
@@ -17,9 +13,9 @@ export function App() {
         overflow: 'hidden',
       }}
     >
-      <Toolbar workspaceRef={workspaceRef} />
+      <Header />
       <div style={{ flex: 1 }}>
-        <ReactBlockly ref={workspaceRef} options={{ toolbox }} />
+        <BlocklyEditor options={{ toolbox }} />
       </div>
     </div>
   );

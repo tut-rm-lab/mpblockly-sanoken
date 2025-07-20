@@ -1,24 +1,23 @@
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
+import { useAtomValue } from 'jotai';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ConfirmResponse } from '../../types/preload';
+import { blocklyWorkspaceAtom } from '../atoms/blocklyWorkspace';
 import { Button } from './Button';
 
 const BLANK_WORKSPACE_JSON = JSON.stringify(
   Blockly.serialization.workspaces.save(new Blockly.Workspace()),
 );
 
-interface ToolbarProps {
-  workspaceRef: React.RefObject<Blockly.Workspace | null>;
-}
-
-export function Toolbar({ workspaceRef: workspace }: ToolbarProps) {
+export function Header() {
+  const workspace = useAtomValue(blocklyWorkspaceAtom);
   const pathRef = useRef<string>(null);
   const workspaceJsonRef = useRef(BLANK_WORKSPACE_JSON);
   const [flashing, setFlashing] = useState(false);
 
   const saveAs = useCallback(async () => {
-    if (!workspace.current) {
+    if (!workspace) {
       return false;
     }
     const path = await window.electronAPI.showSaveDialog();
@@ -26,36 +25,36 @@ export function Toolbar({ workspaceRef: workspace }: ToolbarProps) {
       return false;
     }
     const workspaceJson = JSON.stringify(
-      Blockly.serialization.workspaces.save(workspace.current),
+      Blockly.serialization.workspaces.save(workspace),
     );
     await window.electronAPI.saveFile(path, workspaceJson);
     pathRef.current = path;
     workspaceJsonRef.current = workspaceJson;
     return true;
-  }, [workspace.current]);
+  }, [workspace]);
 
   const save = useCallback(async () => {
-    if (!workspace.current) {
+    if (!workspace) {
       return false;
     }
     if (pathRef.current == null) {
       return saveAs();
     }
     const workspaceJson = JSON.stringify(
-      Blockly.serialization.workspaces.save(workspace.current),
+      Blockly.serialization.workspaces.save(workspace),
     );
     await window.electronAPI.saveFile(pathRef.current, workspaceJson);
     workspaceJsonRef.current = workspaceJson;
     return true;
-  }, [workspace.current, saveAs]);
+  }, [workspace, saveAs]);
 
   const open = useCallback(async () => {
-    if (!workspace.current) {
+    if (!workspace) {
       return;
     }
 
     const workspaceJson = JSON.stringify(
-      Blockly.serialization.workspaces.save(workspace.current),
+      Blockly.serialization.workspaces.save(workspace),
     );
     if (workspaceJson !== workspaceJsonRef.current) {
       const response = await window.electronAPI.showConfirmDialog();
@@ -79,17 +78,17 @@ export function Toolbar({ workspaceRef: workspace }: ToolbarProps) {
     const newWorkspaceJson = await window.electronAPI.openFile(path);
     Blockly.serialization.workspaces.load(
       JSON.parse(newWorkspaceJson),
-      workspace.current,
+      workspace,
     );
     pathRef.current = path;
     workspaceJsonRef.current = newWorkspaceJson;
-  }, [workspace.current, save]);
+  }, [workspace, save]);
 
   const flash = useCallback(async () => {
-    if (!workspace.current) {
+    if (!workspace) {
       return;
     }
-    const code = pythonGenerator.workspaceToCode(workspace.current);
+    const code = pythonGenerator.workspaceToCode(workspace);
     console.log(code);
     try {
       setFlashing(true);
@@ -103,16 +102,16 @@ export function Toolbar({ workspaceRef: workspace }: ToolbarProps) {
     } finally {
       setFlashing(false);
     }
-  }, [workspace.current]);
+  }, [workspace]);
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.onBeforeClose(async () => {
-      if (!workspace.current) {
+      if (!workspace) {
         await window.electronAPI.closeWindow();
         return;
       }
       const workspaceJson = JSON.stringify(
-        Blockly.serialization.workspaces.save(workspace.current),
+        Blockly.serialization.workspaces.save(workspace),
       );
       if (workspaceJson === workspaceJsonRef.current) {
         await window.electronAPI.closeWindow();
@@ -137,7 +136,7 @@ export function Toolbar({ workspaceRef: workspace }: ToolbarProps) {
     return () => {
       unsubscribe();
     };
-  }, [workspace.current, save]);
+  }, [workspace, save]);
 
   return (
     <div style={{ display: 'flex', margin: 8, gap: 8 }}>

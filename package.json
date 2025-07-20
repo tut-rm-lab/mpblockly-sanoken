@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "blockly": "^12.2.0",
+    "jotai": "^2.12.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tmp-promise": "^3.0.3"

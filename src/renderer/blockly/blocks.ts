@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
-import { block } from './toolbox';
+import { block } from './utils';
 
 export const toggleLed = block({ type: 'toggle_led' }, (type) => {
   Blockly.defineBlocksWithJsonArray([

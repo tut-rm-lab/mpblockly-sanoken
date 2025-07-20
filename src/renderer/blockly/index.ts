@@ -1,5 +1,5 @@
 import { sleepSeconds, toggleLed } from './blocks';
-import { block, category, categoryToolbox } from './toolbox';
+import { block, category, categoryToolbox } from './utils';
 
 export default categoryToolbox([
   category({ name: 'カテゴリ' }, [
