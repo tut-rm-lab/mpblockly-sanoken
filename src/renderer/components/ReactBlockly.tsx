@@ -18,7 +18,6 @@ export function ReactBlockly({ ref, options }: BlocklyProps) {
     ref.current = workspace;
 
     return () => {
-      console.log('dispose');
       ref.current = null;
       workspace.dispose();
     };
