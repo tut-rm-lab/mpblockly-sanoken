@@ -1,60 +1,52 @@
-import * as Blockly from 'blockly/core';
-import { useAtomValue } from 'jotai';
 import { useCallback, useEffect, useRef } from 'react';
 import { ConfirmResponse } from '../../types/preload';
-import { blocklyWorkspaceAtom } from '../atoms';
 
-const BLANK_WORKSPACE_JSON = JSON.stringify(
-  Blockly.serialization.workspaces.save(new Blockly.Workspace()),
-);
+interface FileManager {
+  openFile: (file: string) => Promise<string>;
+  saveFile: (file: string, data: string) => Promise<void>;
+  showOpenDialog: () => Promise<string | null>;
+  showSaveDialog: () => Promise<string | null>;
+  showConfirmDialog: () => Promise<ConfirmResponse>;
+  closeWindow: () => Promise<void>;
+  onBeforeClose: (listener: () => void) => () => void;
+  getLatestData: () => Promise<string>;
+  initialValue: string;
+}
 
-export function useFileManager() {
-  const workspace = useAtomValue(blocklyWorkspaceAtom);
+export function useFileManager(fileManager: FileManager) {
   const pathRef = useRef<string>(null);
-  const workspaceJsonRef = useRef(BLANK_WORKSPACE_JSON);
+  const textRef = useRef(fileManager.initialValue);
 
   const saveAs = useCallback(async () => {
-    if (!workspace) {
-      return false;
-    }
-    const path = await window.electronAPI.showSaveDialog();
+    const path = await fileManager.showSaveDialog();
     if (path == null) {
       return false;
     }
-    const workspaceJson = JSON.stringify(
-      Blockly.serialization.workspaces.save(workspace),
-    );
-    await window.electronAPI.saveFile(path, workspaceJson);
+    const workspaceJson = await fileManager.getLatestData();
+    await fileManager.saveFile(path, workspaceJson);
     pathRef.current = path;
-    workspaceJsonRef.current = workspaceJson;
+    textRef.current = workspaceJson;
     return true;
-  }, [workspace]);
+  }, [
+    fileManager.showSaveDialog,
+    fileManager.saveFile,
+    fileManager.getLatestData,
+  ]);
 
   const save = useCallback(async () => {
-    if (!workspace) {
-      return false;
-    }
     if (pathRef.current == null) {
       return saveAs();
     }
-    const workspaceJson = JSON.stringify(
-      Blockly.serialization.workspaces.save(workspace),
-    );
-    await window.electronAPI.saveFile(pathRef.current, workspaceJson);
-    workspaceJsonRef.current = workspaceJson;
+    const workspaceJson = await fileManager.getLatestData();
+    await fileManager.saveFile(pathRef.current, workspaceJson);
+    textRef.current = workspaceJson;
     return true;
-  }, [workspace, saveAs]);
+  }, [saveAs, fileManager.saveFile, fileManager.getLatestData]);
 
   const open = useCallback(async () => {
-    if (!workspace) {
-      return;
-    }
-
-    const workspaceJson = JSON.stringify(
-      Blockly.serialization.workspaces.save(workspace),
-    );
-    if (workspaceJson !== workspaceJsonRef.current) {
-      const response = await window.electronAPI.showConfirmDialog();
+    const workspaceJson = await fileManager.getLatestData();
+    if (workspaceJson !== textRef.current) {
+      const response = await fileManager.showConfirmDialog();
       switch (response) {
         case ConfirmResponse.SAVE:
           if (!(await save())) {
@@ -68,42 +60,39 @@ export function useFileManager() {
       }
     }
 
-    const path = await window.electronAPI.showOpenDialog();
+    const path = await fileManager.showOpenDialog();
     if (path == null) {
       return;
     }
-    const newWorkspaceJson = await window.electronAPI.openFile(path);
-    Blockly.serialization.workspaces.load(
-      JSON.parse(newWorkspaceJson),
-      workspace,
-    );
+    const newWorkspaceJson = await fileManager.openFile(path);
     pathRef.current = path;
-    workspaceJsonRef.current = newWorkspaceJson;
-  }, [workspace, save]);
+    textRef.current = newWorkspaceJson;
+    return newWorkspaceJson;
+  }, [
+    save,
+    fileManager.openFile,
+    fileManager.showConfirmDialog,
+    fileManager.showOpenDialog,
+    fileManager.getLatestData,
+  ]);
 
   useEffect(() => {
-    const unsubscribe = window.electronAPI.onBeforeClose(async () => {
-      if (!workspace) {
-        await window.electronAPI.closeWindow();
+    const unsubscribe = fileManager.onBeforeClose(async () => {
+      const workspaceJson = await fileManager.getLatestData();
+      if (workspaceJson === textRef.current) {
+        await fileManager.closeWindow();
         return;
       }
-      const workspaceJson = JSON.stringify(
-        Blockly.serialization.workspaces.save(workspace),
-      );
-      if (workspaceJson === workspaceJsonRef.current) {
-        await window.electronAPI.closeWindow();
-        return;
-      }
-      const response = await window.electronAPI.showConfirmDialog();
+      const response = await fileManager.showConfirmDialog();
       switch (response) {
         case ConfirmResponse.SAVE:
           if (!(await save())) {
             break;
           }
-          await window.electronAPI.closeWindow();
+          await fileManager.closeWindow();
           break;
         case ConfirmResponse.DO_NOT_SAVE:
-          await window.electronAPI.closeWindow();
+          await fileManager.closeWindow();
           break;
         case ConfirmResponse.CANCEL:
           break;
@@ -113,7 +102,13 @@ export function useFileManager() {
     return () => {
       unsubscribe();
     };
-  }, [workspace, save]);
+  }, [
+    save,
+    fileManager.closeWindow,
+    fileManager.onBeforeClose,
+    fileManager.showConfirmDialog,
+    fileManager.getLatestData,
+  ]);
 
   return { open, save, saveAs };
 }

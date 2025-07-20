@@ -1,8 +1,8 @@
 import * as Blockly from 'blockly/core';
-import { memo, type RefCallback, useEffect, useRef } from 'react';
+import { memo, type RefObject, useEffect, useRef } from 'react';
 
 interface BlocklyProps {
-  ref: RefCallback<Blockly.WorkspaceSvg>;
+  ref: RefObject<Blockly.WorkspaceSvg | null>;
   options: Blockly.BlocklyOptions;
 }
 
@@ -17,8 +17,10 @@ export const BlocklyEditor = memo(function BlocklyEditor({
       return;
     }
     const workspace = Blockly.inject(containerRef.current, options);
-    ref(workspace);
+    ref.current = workspace;
+
     return () => {
+      ref.current = null;
       workspace.dispose();
     };
   }, [ref, options]);

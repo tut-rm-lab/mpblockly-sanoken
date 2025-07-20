@@ -1,9 +1,7 @@
 import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
-import type * as Blockly from 'blockly/core';
+import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
-import { useSetAtom } from 'jotai';
-import { useCallback, useMemo, useState } from 'react';
-import { blocklyWorkspaceAtom } from './atoms';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import toolbox from './blockly';
 import { BlocklyEditor } from './components/BlocklyEditor';
 import { useFileManager } from './hooks/useFileManager';
@@ -11,27 +9,45 @@ import { useFlash } from './hooks/useFlash';
 
 export function App() {
   const [code, setCode] = useState('');
-  const setWorkspace = useSetAtom(blocklyWorkspaceAtom);
+  const workspaceRef = useRef<Blockly.WorkspaceSvg>(null);
   const [tabIndex, setTabIndex] = useState(0);
-  const { open, save, saveAs } = useFileManager();
+  const { open, save, saveAs } = useFileManager({
+    openFile: window.electronAPI.openFile,
+    saveFile: window.electronAPI.saveFile,
+    showOpenDialog: window.electronAPI.showOpenDialog,
+    showSaveDialog: window.electronAPI.showSaveDialog,
+    showConfirmDialog: window.electronAPI.showConfirmDialog,
+    closeWindow: window.electronAPI.closeWindow,
+    onBeforeClose: window.electronAPI.onBeforeClose,
+    getLatestData: async () => {
+      if (!workspaceRef.current) {
+        throw new Error('workspace is null');
+      }
+      return JSON.stringify(
+        Blockly.serialization.workspaces.save(workspaceRef.current),
+      );
+    },
+    initialValue: JSON.stringify(
+      Blockly.serialization.workspaces.save(new Blockly.Workspace()),
+    ),
+  });
   const { flash, flashing } = useFlash();
 
-  const workspaceRef = useCallback(
-    (workspace: Blockly.WorkspaceSvg) => {
-      const listener = () => {
-        const code = pythonGenerator.workspaceToCode(workspace);
-        setCode(code);
-      };
-      workspace.addChangeListener(listener);
-      setWorkspace(workspace);
+  useEffect(() => {
+    const workspace = workspaceRef.current;
+    if (!workspace) {
+      return;
+    }
+    const listener = () => {
+      const code = pythonGenerator.workspaceToCode(workspace);
+      setCode(code);
+    };
+    workspace.addChangeListener(listener);
 
-      return () => {
-        workspace.removeChangeListener(listener);
-        setWorkspace(undefined);
-      };
-    },
-    [setWorkspace],
-  );
+    return () => {
+      workspace.removeChangeListener(listener);
+    };
+  }, []);
 
   const options = useMemo(() => ({ toolbox }), []);
 
@@ -53,7 +69,21 @@ export function App() {
         }}
       >
         <Stack direction="row" spacing={1} sx={{ marginX: 1 }}>
-          <Button variant="contained" onClick={open}>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              if (!workspaceRef.current) {
+                throw new Error('workspace is null');
+              }
+              const data = await open();
+              if (data) {
+                Blockly.serialization.workspaces.load(
+                  JSON.parse(data),
+                  workspaceRef.current,
+                );
+              }
+            }}
+          >
             開く
           </Button>
           <Button variant="contained" color="secondary" onClick={save}>
