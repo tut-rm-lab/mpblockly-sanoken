@@ -2,8 +2,8 @@ import { contextBridge, ipcRenderer } from 'electron';
 import type { ElectronAPI } from '../types/preload';
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  openFile: (file) => ipcRenderer.invoke('open-file', file),
-  saveFile: (file, data) => ipcRenderer.invoke('save-file', file, data),
+  readFile: (file) => ipcRenderer.invoke('open-file', file),
+  writeFile: (file, data) => ipcRenderer.invoke('save-file', file, data),
   showOpenDialog: () => ipcRenderer.invoke('show-open-dialog'),
   showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
   showInfoDialog: (message) => ipcRenderer.invoke('show-info-dialog', message),
@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('show-error-dialog', message),
   showConfirmDialog: () => ipcRenderer.invoke('show-confirm-dialog'),
   closeWindow: () => ipcRenderer.invoke('close-window'),
-  flashToPico: (code) => ipcRenderer.invoke('flash-to-pico', code),
+  flashToMicroPython: (code) => ipcRenderer.invoke('flash-to-pico', code),
   onBeforeClose: (listener) => {
     const wrapper = () => {
       listener();

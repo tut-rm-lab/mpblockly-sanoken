@@ -6,7 +6,7 @@ export function useFlash() {
   const flash = useCallback(async (code: string) => {
     try {
       setFlashing(true);
-      await window.electronAPI.flashToPico(code);
+      await window.electronAPI.flashToMicroPython(code);
       await window.electronAPI.showInfoDialog('書き込みに成功しました');
     } catch (error) {
       if (error instanceof Error) {

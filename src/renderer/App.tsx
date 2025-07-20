@@ -12,8 +12,8 @@ export function App() {
   const [tabIndex, setTabIndex] = useState(0);
   const [code, setCode] = useState('');
   const { open, save, saveAs } = useFileManager({
-    readFile: window.electronAPI.openFile,
-    writeFile: window.electronAPI.saveFile,
+    readFile: window.electronAPI.readFile,
+    writeFile: window.electronAPI.writeFile,
     showOpenDialog: window.electronAPI.showOpenDialog,
     showSaveDialog: window.electronAPI.showSaveDialog,
     showConfirmDialog: window.electronAPI.showConfirmDialog,
