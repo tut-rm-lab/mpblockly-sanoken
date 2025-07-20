@@ -4,18 +4,18 @@ import { ConfirmResponse } from '../../types/preload';
 interface FileManager {
   readFile: (file: string) => Promise<string>;
   writeFile: (file: string, data: string) => Promise<void>;
+  exit: () => Promise<void>;
+  onExit: (listener: () => void) => () => void;
   showOpenDialog: () => Promise<string | null>;
   showSaveDialog: () => Promise<string | null>;
   showConfirmDialog: () => Promise<ConfirmResponse>;
-  closeWindow: () => Promise<void>;
-  onBeforeClose: (listener: () => void) => () => void;
   getLatestData: () => Promise<string>;
-  initialValue: string;
+  isDirty: (a: string | null, b: string) => boolean;
 }
 
 export function useFileManager(fileManager: FileManager) {
   const pathRef = useRef<string>(null);
-  const dataRef = useRef(fileManager.initialValue);
+  const dataRef = useRef<string>(null);
 
   const saveAs = useCallback(async () => {
     const path = await fileManager.showSaveDialog();
@@ -45,7 +45,7 @@ export function useFileManager(fileManager: FileManager) {
 
   const open = useCallback(async () => {
     const data = await fileManager.getLatestData();
-    if (data !== dataRef.current) {
+    if (await fileManager.isDirty(dataRef.current, data)) {
       const response = await fileManager.showConfirmDialog();
       switch (response) {
         case ConfirmResponse.SAVE:
@@ -74,13 +74,14 @@ export function useFileManager(fileManager: FileManager) {
     fileManager.showConfirmDialog,
     fileManager.showOpenDialog,
     fileManager.getLatestData,
+    fileManager.isDirty,
   ]);
 
   useEffect(() => {
-    const unsubscribe = fileManager.onBeforeClose(async () => {
+    const unsubscribe = fileManager.onExit(async () => {
       const data = await fileManager.getLatestData();
-      if (data === dataRef.current) {
-        await fileManager.closeWindow();
+      if (!(await fileManager.isDirty(dataRef.current, data))) {
+        await fileManager.exit();
         return;
       }
       const response = await fileManager.showConfirmDialog();
@@ -89,10 +90,10 @@ export function useFileManager(fileManager: FileManager) {
           if (!(await save())) {
             break;
           }
-          await fileManager.closeWindow();
+          await fileManager.exit();
           break;
         case ConfirmResponse.DO_NOT_SAVE:
-          await fileManager.closeWindow();
+          await fileManager.exit();
           break;
         case ConfirmResponse.CANCEL:
           break;
@@ -104,10 +105,11 @@ export function useFileManager(fileManager: FileManager) {
     };
   }, [
     save,
-    fileManager.closeWindow,
-    fileManager.onBeforeClose,
+    fileManager.exit,
+    fileManager.onExit,
     fileManager.showConfirmDialog,
     fileManager.getLatestData,
+    fileManager.isDirty,
   ]);
 
   return { open, save, saveAs };

@@ -18,8 +18,8 @@ export function App() {
     showOpenDialog: window.electronAPI.showOpenDialog,
     showSaveDialog: window.electronAPI.showSaveDialog,
     showConfirmDialog: window.electronAPI.showConfirmDialog,
-    closeWindow: window.electronAPI.closeWindow,
-    onBeforeClose: window.electronAPI.onBeforeClose,
+    exit: window.electronAPI.closeWindow,
+    onExit: window.electronAPI.onBeforeClose,
     getLatestData: async () => {
       if (!workspaceRef.current) {
         throw new Error('workspace is null');
@@ -28,9 +28,7 @@ export function App() {
         Blockly.serialization.workspaces.save(workspaceRef.current),
       );
     },
-    initialValue: JSON.stringify(
-      Blockly.serialization.workspaces.save(new Blockly.Workspace()),
-    ),
+    isDirty: (a, b) => (a != null || b !== '{}') && a !== b,
   });
   const { flash, flashing } = useFlash();
 
