@@ -1,16 +1,24 @@
-import { Button, ButtonGroup, ScopedCssBaseline } from '@mui/material';
+import {
+  Button,
+  Paper,
+  ScopedCssBaseline,
+  Stack,
+  Tab,
+  Tabs,
+} from '@mui/material';
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ConfirmResponse } from '../../types/preload';
-import { blocklyWorkspaceAtom } from '../atoms/blocklyWorkspace';
+import { blocklyWorkspaceAtom, tabIndexAtom } from '../atoms';
 
 const BLANK_WORKSPACE_JSON = JSON.stringify(
   Blockly.serialization.workspaces.save(new Blockly.Workspace()),
 );
 
 export function Header() {
+  const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
   const workspace = useAtomValue(blocklyWorkspaceAtom);
   const pathRef = useRef<string>(null);
   const workspaceJsonRef = useRef(BLANK_WORKSPACE_JSON);
@@ -140,18 +148,44 @@ export function Header() {
 
   return (
     <ScopedCssBaseline>
-      <ButtonGroup sx={{ margin: 1 }} variant="contained">
-        <Button onClick={open}>開く</Button>
-        <Button onClick={save}>上書き保存</Button>
-        <Button onClick={saveAs}>別名保存</Button>
-        <Button
-          sx={{ textTransform: 'none' }}
-          onClick={flash}
-          disabled={flashing}
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: 1,
+          borderColor: 'grey.500',
+        }}
+      >
+        <Stack direction="row" spacing={1} sx={{ marginX: 1 }}>
+          <Button variant="contained" onClick={open}>
+            開く
+          </Button>
+          <Button variant="contained" color="secondary" onClick={save}>
+            上書き保存
+          </Button>
+          <Button variant="contained" color="secondary" onClick={saveAs}>
+            別名保存
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={flash}
+            disabled={flashing}
+          >
+            基板に書き込む
+          </Button>
+        </Stack>
+        <Tabs
+          value={tabIndex}
+          onChange={(_, index) => {
+            setTabIndex(index);
+          }}
         >
-          Pico に書き込み
-        </Button>
-      </ButtonGroup>
+          <Tab label="ブロック" />
+          <Tab label="コード" />
+        </Tabs>
+      </Stack>
     </ScopedCssBaseline>
   );
 }

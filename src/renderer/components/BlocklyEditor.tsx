@@ -1,12 +1,15 @@
 import * as Blockly from 'blockly/core';
-import { type RefCallback, useEffect, useRef } from 'react';
+import { memo, type RefCallback, useEffect, useRef } from 'react';
 
 interface BlocklyProps {
-  ref: RefCallback<Blockly.Workspace>;
+  ref: RefCallback<Blockly.WorkspaceSvg>;
   options: Blockly.BlocklyOptions;
 }
 
-export function BlocklyEditor({ ref, options }: BlocklyProps) {
+export const BlocklyEditor = memo(function BlocklyEditor({
+  ref,
+  options,
+}: BlocklyProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,4 +31,4 @@ export function BlocklyEditor({ ref, options }: BlocklyProps) {
       />
     </div>
   );
-}
+});
