@@ -15,6 +15,8 @@ import { startViteServer } from './server.js';
 
 async function createWindow() {
   const mainWindow = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
     webPreferences: {
       preload: resolve(import.meta.dirname, '../preload/index.cjs'),
     },
