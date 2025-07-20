@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import {
   closeWindow,
-  flashToPico,
+  flashToMicroPython,
   openFile,
   saveFile,
   showConfirmDialog,
@@ -45,7 +45,7 @@ app.whenReady().then(() => {
   ipcMain.handle('show-error-dialog', showErrorDialog);
   ipcMain.handle('show-confirm-dialog', showConfirmDialog);
   ipcMain.handle('close-window', closeWindow);
-  ipcMain.handle('flash-to-pico', flashToPico);
+  ipcMain.handle('flash-to-micro-python', flashToMicroPython);
 
   createWindow();
 

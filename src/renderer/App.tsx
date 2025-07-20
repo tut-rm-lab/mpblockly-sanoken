@@ -12,15 +12,10 @@ export function App() {
   const [tabIndex, setTabIndex] = useState(0);
   const [code, setCode] = useState('');
 
-  const { open, save, saveAs } = useFileManager({
-    readFile: window.electronAPI.readFile,
-    writeFile: window.electronAPI.writeFile,
-    showOpenDialog: window.electronAPI.showOpenDialog,
-    showSaveDialog: window.electronAPI.showSaveDialog,
-    showConfirmDialog: window.electronAPI.showConfirmDialog,
-    exit: window.electronAPI.closeWindow,
-    onExit: window.electronAPI.onBeforeClose,
-    getLatestData: async () => {
+  const { open, save, saveAs } = useFileManager<string>({
+    openFile: window.electronAPI.openFile,
+    saveFile: window.electronAPI.saveFile,
+    getData: async () => {
       if (!workspaceRef.current) {
         throw new Error('workspace is null');
       }
@@ -29,6 +24,11 @@ export function App() {
       );
     },
     isDirty: (prev, cur) => (prev != null || cur !== '{}') && prev !== cur,
+    closeWindow: window.electronAPI.closeWindow,
+    onBeforeClose: window.electronAPI.onBeforeClose,
+    showOpenDialog: window.electronAPI.showOpenDialog,
+    showSaveDialog: window.electronAPI.showSaveDialog,
+    showConfirmDialog: window.electronAPI.showConfirmDialog,
   });
   const { flash, flashing } = useFlash();
 

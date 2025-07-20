@@ -3,7 +3,6 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { app, BrowserWindow, dialog, type IpcMainInvokeEvent } from 'electron';
 import { file } from 'tmp-promise';
-import type { ConfirmResponse } from '../types/preload.js';
 
 function getWindowFromEvent(event: IpcMainInvokeEvent): BrowserWindow {
   const window = BrowserWindow.fromWebContents(event.sender);
@@ -101,22 +100,28 @@ export async function showErrorDialog(
 
 export async function showConfirmDialog(
   event: IpcMainInvokeEvent,
-): Promise<ConfirmResponse> {
-  return (
-    await dialog.showMessageBox(getWindowFromEvent(event), {
-      type: 'warning',
-      message: 'ワークスペースの変更を保存しますか?',
-      buttons: ['保存', '保存しない', 'キャンセル'],
-      cancelId: 2,
-    })
-  ).response as ConfirmResponse;
+): Promise<boolean | null> {
+  const { response } = await dialog.showMessageBox(getWindowFromEvent(event), {
+    type: 'warning',
+    message: 'ワークスペースの変更を保存しますか?',
+    buttons: ['保存', '保存しない', 'キャンセル'],
+    cancelId: 2,
+  });
+  switch (response) {
+    case 0:
+      return true;
+    case 1:
+      return false;
+    default:
+      return null;
+  }
 }
 
 export function closeWindow(event: IpcMainInvokeEvent): void {
   getWindowFromEvent(event).destroy();
 }
 
-export async function flashToPico(
+export async function flashToMicroPython(
   _: IpcMainInvokeEvent,
   code: string,
 ): Promise<void> {

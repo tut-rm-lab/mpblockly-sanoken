@@ -1,103 +1,90 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { ConfirmResponse } from '../../types/preload';
 
-interface FileManager {
-  readFile: (file: string) => Promise<string>;
-  writeFile: (file: string, data: string) => Promise<void>;
-  exit: () => Promise<void>;
-  onExit: (listener: () => void) => () => void;
+interface FileManager<T> {
+  openFile: (file: string) => Promise<T>;
+  saveFile: (file: string, data: T) => Promise<void>;
+  getData: () => Promise<T>;
+  isDirty: (prev: T | null, cur: T) => boolean;
+  closeWindow: () => Promise<void>;
+  onBeforeClose: (listener: () => void) => () => void;
   showOpenDialog: () => Promise<string | null>;
   showSaveDialog: () => Promise<string | null>;
-  showConfirmDialog: () => Promise<ConfirmResponse>;
-  getLatestData: () => Promise<string>;
-  isDirty: (prev: string | null, cur: string) => boolean;
+  showConfirmDialog: () => Promise<boolean | null>;
 }
 
-export function useFileManager(fileManager: FileManager) {
+export function useFileManager<T>(fileManager: FileManager<T>) {
   const prevPathRef = useRef<string>(null);
-  const prevDataRef = useRef<string>(null);
+  const prevDataRef = useRef<T>(null);
 
   const saveAs = useCallback(async () => {
     const path = await fileManager.showSaveDialog();
     if (path == null) {
       return false;
     }
-    const data = await fileManager.getLatestData();
-    await fileManager.writeFile(path, data);
+    const data = await fileManager.getData();
+    await fileManager.saveFile(path, data);
     prevPathRef.current = path;
     prevDataRef.current = data;
     return true;
-  }, [
-    fileManager.showSaveDialog,
-    fileManager.writeFile,
-    fileManager.getLatestData,
-  ]);
+  }, [fileManager.showSaveDialog, fileManager.saveFile, fileManager.getData]);
 
   const save = useCallback(async () => {
     if (prevPathRef.current == null) {
       return saveAs();
     }
-    const data = await fileManager.getLatestData();
-    await fileManager.writeFile(prevPathRef.current, data);
+    const data = await fileManager.getData();
+    await fileManager.saveFile(prevPathRef.current, data);
     prevDataRef.current = data;
     return true;
-  }, [saveAs, fileManager.writeFile, fileManager.getLatestData]);
+  }, [saveAs, fileManager.saveFile, fileManager.getData]);
 
   const open = useCallback(async () => {
-    const data = await fileManager.getLatestData();
-    if (await fileManager.isDirty(prevDataRef.current, data)) {
+    const data = await fileManager.getData();
+    if (fileManager.isDirty(prevDataRef.current, data)) {
       const response = await fileManager.showConfirmDialog();
-      switch (response) {
-        case ConfirmResponse.SAVE:
-          if (!(await save())) {
-            return;
-          }
-          break;
-        case ConfirmResponse.DO_NOT_SAVE:
-          break;
-        case ConfirmResponse.CANCEL:
+      if (response == null) {
+        return;
+      }
+      if (response) {
+        if (!(await save())) {
           return;
+        }
       }
     }
-
     const path = await fileManager.showOpenDialog();
     if (path == null) {
       return;
     }
-    const newData = await fileManager.readFile(path);
+    const newData = await fileManager.openFile(path);
     prevPathRef.current = path;
     prevDataRef.current = newData;
     return newData;
   }, [
     save,
-    fileManager.readFile,
+    fileManager.openFile,
     fileManager.showConfirmDialog,
     fileManager.showOpenDialog,
-    fileManager.getLatestData,
+    fileManager.getData,
     fileManager.isDirty,
   ]);
 
   useEffect(() => {
-    const unsubscribe = fileManager.onExit(async () => {
-      const data = await fileManager.getLatestData();
-      if (!(await fileManager.isDirty(prevDataRef.current, data))) {
-        await fileManager.exit();
+    const unsubscribe = fileManager.onBeforeClose(async () => {
+      const data = await fileManager.getData();
+      if (!fileManager.isDirty(prevDataRef.current, data)) {
+        await fileManager.closeWindow();
         return;
       }
       const response = await fileManager.showConfirmDialog();
-      switch (response) {
-        case ConfirmResponse.SAVE:
-          if (!(await save())) {
-            break;
-          }
-          await fileManager.exit();
-          break;
-        case ConfirmResponse.DO_NOT_SAVE:
-          await fileManager.exit();
-          break;
-        case ConfirmResponse.CANCEL:
-          break;
+      if (response == null) {
+        return;
       }
+      if (response) {
+        if (!(await save())) {
+          return;
+        }
+      }
+      await fileManager.closeWindow();
     });
 
     return () => {
@@ -105,10 +92,10 @@ export function useFileManager(fileManager: FileManager) {
     };
   }, [
     save,
-    fileManager.exit,
-    fileManager.onExit,
+    fileManager.closeWindow,
+    fileManager.onBeforeClose,
     fileManager.showConfirmDialog,
-    fileManager.getLatestData,
+    fileManager.getData,
     fileManager.isDirty,
   ]);
 
