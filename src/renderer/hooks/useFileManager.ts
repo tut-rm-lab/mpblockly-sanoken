@@ -1,28 +1,17 @@
-import {
-  Button,
-  Paper,
-  ScopedCssBaseline,
-  Stack,
-  Tab,
-  Tabs,
-} from '@mui/material';
 import * as Blockly from 'blockly/core';
-import { pythonGenerator } from 'blockly/python';
-import { useAtom, useAtomValue } from 'jotai';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { useCallback, useEffect, useRef } from 'react';
 import { ConfirmResponse } from '../../types/preload';
-import { blocklyWorkspaceAtom, tabIndexAtom } from '../atoms';
+import { blocklyWorkspaceAtom } from '../atoms';
 
 const BLANK_WORKSPACE_JSON = JSON.stringify(
   Blockly.serialization.workspaces.save(new Blockly.Workspace()),
 );
 
-export function Header() {
-  const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
+export function useFileManager() {
   const workspace = useAtomValue(blocklyWorkspaceAtom);
   const pathRef = useRef<string>(null);
   const workspaceJsonRef = useRef(BLANK_WORKSPACE_JSON);
-  const [flashing, setFlashing] = useState(false);
 
   const saveAs = useCallback(async () => {
     if (!workspace) {
@@ -92,26 +81,6 @@ export function Header() {
     workspaceJsonRef.current = newWorkspaceJson;
   }, [workspace, save]);
 
-  const flash = useCallback(async () => {
-    if (!workspace) {
-      return;
-    }
-    const code = pythonGenerator.workspaceToCode(workspace);
-    console.log(code);
-    try {
-      setFlashing(true);
-      await window.electronAPI.flashToPico(code);
-      await window.electronAPI.showInfoDialog('書き込みに成功しました');
-    } catch (error) {
-      if (error instanceof Error) {
-        await window.electronAPI.showErrorDialog(error.message);
-        await window.electronAPI.showErrorDialog('書き込みに失敗しました');
-      }
-    } finally {
-      setFlashing(false);
-    }
-  }, [workspace]);
-
   useEffect(() => {
     const unsubscribe = window.electronAPI.onBeforeClose(async () => {
       if (!workspace) {
@@ -146,46 +115,5 @@ export function Header() {
     };
   }, [workspace, save]);
 
-  return (
-    <ScopedCssBaseline>
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: 1,
-          borderColor: 'grey.500',
-        }}
-      >
-        <Stack direction="row" spacing={1} sx={{ marginX: 1 }}>
-          <Button variant="contained" onClick={open}>
-            開く
-          </Button>
-          <Button variant="contained" color="secondary" onClick={save}>
-            上書き保存
-          </Button>
-          <Button variant="contained" color="secondary" onClick={saveAs}>
-            別名保存
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={flash}
-            disabled={flashing}
-          >
-            基板に書き込む
-          </Button>
-        </Stack>
-        <Tabs
-          value={tabIndex}
-          onChange={(_, index) => {
-            setTabIndex(index);
-          }}
-        >
-          <Tab label="ブロック" />
-          <Tab label="コード" />
-        </Tabs>
-      </Stack>
-    </ScopedCssBaseline>
-  );
+  return { open, save, saveAs };
 }
