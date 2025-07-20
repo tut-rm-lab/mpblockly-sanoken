@@ -11,6 +11,7 @@ export function App() {
   const workspaceRef = useRef<Blockly.WorkspaceSvg>(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [code, setCode] = useState('');
+
   const { open, save, saveAs } = useFileManager({
     readFile: window.electronAPI.readFile,
     writeFile: window.electronAPI.writeFile,
