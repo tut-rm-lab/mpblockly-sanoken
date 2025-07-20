@@ -1,5 +1,5 @@
-import { BrowserWindow, dialog, type IpcMainInvokeEvent } from 'electron';
 import { readFile, writeFile } from 'node:fs/promises';
+import { BrowserWindow, dialog, type IpcMainInvokeEvent } from 'electron';
 import { resetMicroPython, writeFileToMicroPython } from './microPython.js';
 
 function getWindowFromEvent(event: IpcMainInvokeEvent): BrowserWindow {
