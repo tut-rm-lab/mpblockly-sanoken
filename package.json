@@ -4,9 +4,6 @@
   "version": "0.0.2",
   "type": "module",
   "main": "./dist-tsc/main/index.js",
-  "build": {
-    "asarUnpack": "tools/mpremote.exe"
-  },
   "scripts": {
     "dev": "tsc -b --noCheck && cross-env NODE_ENV=development electron .",
     "build": "tsc -b && vite build",
@@ -20,10 +17,11 @@
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
+    "@serialport/parser-delimiter": "^13.0.0",
     "blockly": "^12.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tmp-promise": "^3.0.3"
+    "serialport": "^13.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.1",

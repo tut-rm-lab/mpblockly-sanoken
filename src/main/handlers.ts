@@ -1,8 +1,6 @@
-import { execFile } from 'node:child_process';
+import { BrowserWindow, dialog, type IpcMainInvokeEvent } from 'electron';
 import { readFile, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { app, BrowserWindow, dialog, type IpcMainInvokeEvent } from 'electron';
-import { file } from 'tmp-promise';
+import { resetMicroPython, writeFileToMicroPython } from './microPython.js';
 
 function getWindowFromEvent(event: IpcMainInvokeEvent): BrowserWindow {
   const window = BrowserWindow.fromWebContents(event.sender);
@@ -12,28 +10,8 @@ function getWindowFromEvent(event: IpcMainInvokeEvent): BrowserWindow {
   return window;
 }
 
-function runMpremote(...args: string[]): Promise<void> {
-  const mpremote = resolve(
-    app.getAppPath(),
-    app.isPackaged
-      ? '../app.asar.unpacked/tools/mpremote.exe'
-      : './tools/mpremote.exe',
-  );
-  return new Promise<void>((resolve, reject) => {
-    execFile(mpremote, args, (error, stdout, stderr) => {
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve();
-    });
-  });
-}
-
 export function openFile(_: IpcMainInvokeEvent, file: string): Promise<string> {
-  return readFile(file, { encoding: 'utf-8' });
+  return readFile(file, { encoding: 'utf8' });
 }
 
 export function saveFile(
@@ -41,7 +19,7 @@ export function saveFile(
   file: string,
   data: string,
 ): Promise<void> {
-  return writeFile(file, data, { encoding: 'utf-8' });
+  return writeFile(file, data, { encoding: 'utf8' });
 }
 
 export async function showOpenDialog(
@@ -125,9 +103,6 @@ export async function flashToMicroPython(
   _: IpcMainInvokeEvent,
   code: string,
 ): Promise<void> {
-  const { path, cleanup } = await file();
-  await writeFile(path, code, { encoding: 'utf-8' });
-  await runMpremote('fs', 'cp', path, ':main.py');
-  await runMpremote('reset');
-  await cleanup();
+  await writeFileToMicroPython('main.py', code);
+  await resetMicroPython();
 }
