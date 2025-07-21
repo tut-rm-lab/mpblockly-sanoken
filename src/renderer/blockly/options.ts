@@ -1,4 +1,5 @@
-import type { BlocklyOptions } from 'blockly/core';
+import theme from './theme';
 import toolbox from './toolbox';
+import { defineOptions } from './utils';
 
-export default { toolbox } satisfies BlocklyOptions;
+export default defineOptions({ theme, toolbox });

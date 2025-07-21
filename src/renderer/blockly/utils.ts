@@ -1,4 +1,4 @@
-import type * as Blockly from 'blockly/core';
+import * as Blockly from 'blockly/core';
 
 type Merge<T, U> = Omit<T, keyof U> & U;
 
@@ -25,16 +25,23 @@ export type CategoryToolbox = Merge<
   Blockly.utils.toolbox.ToolboxInfo,
   {
     kind: 'categoryToolbox';
-    contents: StaticCategory[];
+    contents: Category[];
   }
 >;
+
+export type Category = StaticCategory | DynamicCategory;
 
 export type StaticCategory = Merge<
   MakeUndefinedOptional<Blockly.utils.toolbox.StaticCategoryInfo>,
   {
     kind: 'category';
-    contents: (StaticCategory | FlyoutItem)[];
+    contents: (Category | FlyoutItem)[];
   }
+>;
+
+export type DynamicCategory = Merge<
+  MakeUndefinedOptional<Blockly.utils.toolbox.DynamicCategoryInfo>,
+  { kind: 'category'; name: string }
 >;
 
 export type FlyoutItem = Block | Separator | Button | Label;
@@ -68,23 +75,36 @@ export type Label = Merge<
   }
 >;
 
-export function flyoutToolbox(contents: Block[]): FlyoutToolbox {
+export function defineOptions(
+  options: Blockly.BlocklyOptions,
+): Blockly.BlocklyOptions {
+  return options;
+}
+
+export function defineTheme(
+  options: Parameters<typeof Blockly.Theme.defineTheme>[1],
+): Blockly.Theme {
+  const { name } = options;
+  return Blockly.Theme.defineTheme(name, options);
+}
+
+export function defineFlyoutToolbox(contents: Block[]): FlyoutToolbox {
   return {
     kind: 'flyoutToolbox',
     contents,
   };
 }
 
-export function categoryToolbox(contents: StaticCategory[]): CategoryToolbox {
+export function defineCategoryToolbox(contents: Category[]): CategoryToolbox {
   return {
     kind: 'categoryToolbox',
     contents,
   };
 }
 
-export function category(
+export function defineCategory(
   options: Omit<StaticCategory, 'kind' | 'contents'>,
-  contents: (StaticCategory | FlyoutItem)[],
+  contents: (Category | FlyoutItem)[],
 ): StaticCategory {
   return {
     ...options,
@@ -93,7 +113,16 @@ export function category(
   };
 }
 
-export function block(
+export function defineDynamicCategory(
+  options: Omit<DynamicCategory, 'kind'>,
+): DynamicCategory {
+  return {
+    ...options,
+    kind: 'category',
+  };
+}
+
+export function defineBlock(
   options: Omit<Block, 'kind'>,
   blockDefinition?: (type: string) => void,
 ): Block {
@@ -104,21 +133,21 @@ export function block(
   };
 }
 
-export function separator(options?: Omit<Separator, 'kind'>): Separator {
+export function defineSeparator(options?: Omit<Separator, 'kind'>): Separator {
   return {
     ...options,
     kind: 'sep',
   };
 }
 
-export function button(options: Omit<Button, 'kind'>): Button {
+export function defineButton(options: Omit<Button, 'kind'>): Button {
   return {
     ...options,
     kind: 'button',
   };
 }
 
-export function label(options: Omit<Label, 'kind'>): Label {
+export function defineLabel(options: Omit<Label, 'kind'>): Label {
   return {
     ...options,
     kind: 'label',

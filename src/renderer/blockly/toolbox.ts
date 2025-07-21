@@ -1,23 +1,24 @@
-import { block, category, categoryToolbox, type Toolbox } from './utils';
+import { categoryPin } from './blocks/pin';
+import {
+  defineBlock,
+  defineCategory,
+  defineCategoryToolbox,
+  defineDynamicCategory,
+} from './utils';
 
-export default categoryToolbox([
-  category(
+export default defineCategoryToolbox([
+  defineCategory(
     { name: '条件分岐' },
     [
-      'logic_boolean',
       'controls_if',
       'controls_ifelse',
       'logic_compare',
       'logic_operation',
       'logic_negate',
-      'logic_null',
-      'logic_ternary',
-      'controls_if_if',
-      'controls_if_elseif',
-      'controls_if_else',
-    ].map((type) => block({ type })),
+      'logic_boolean',
+    ].map((type) => defineBlock({ type })),
   ),
-  category(
+  defineCategory(
     { name: 'ループ' },
     [
       'controls_repeat_ext',
@@ -26,9 +27,9 @@ export default categoryToolbox([
       'controls_for',
       'controls_forEach',
       'controls_flow_statements',
-    ].map((type) => block({ type })),
+    ].map((type) => defineBlock({ type })),
   ),
-  category(
+  defineCategory(
     { name: '数学' },
     [
       'math_number',
@@ -45,32 +46,15 @@ export default categoryToolbox([
       'math_random_int',
       'math_random_float',
       'math_atan2',
-    ].map((type) => block({ type })),
+    ].map((type) => defineBlock({ type })),
   ),
-  category(
+  defineCategory(
     { name: 'テキスト' },
-    [
-      'text',
-      'text_join',
-      'text_create_join_container',
-      'text_create_join_item',
-      'text_append',
-      'text_length',
-      'text_isEmpty',
-      'text_indexOf',
-      'text_charAt',
-      'text_getSubstring',
-      'text_changeCase',
-      'text_trim',
-      'text_print',
-      'text_prompt_ext',
-      'text_prompt',
-      'text_count',
-      'text_replace',
-      'text_reverse',
-    ].map((type) => block({ type })),
+    ['text', 'text_join', 'text_length', 'text_print'].map((type) =>
+      defineBlock({ type }),
+    ),
   ),
-  category(
+  defineCategory(
     { name: '配列' },
     [
       'lists_create_empty',
@@ -87,28 +71,9 @@ export default categoryToolbox([
       'lists_getSublist',
       'lists_sort',
       'lists_split',
-    ].map((type) => block({ type })),
+    ].map((type) => defineBlock({ type })),
   ),
-  category(
-    { name: '関数' },
-    [
-      'procedures_defnoreturn',
-      'procedures_defreturn',
-      'procedures_mutatorcontainer',
-      'procedures_mutatorarg',
-      'procedures_callnoreturn',
-      'procedures_callreturn',
-      'procedures_ifreturn',
-    ].map((type) => block({ type })),
-  ),
-  category(
-    { name: '変数' },
-    ['variables_get', 'variables_set'].map((type) => block({ type })),
-  ),
-  category(
-    { name: '変数' },
-    ['variables_get_dynamic', 'variables_set_dynamic'].map((type) =>
-      block({ type }),
-    ),
-  ),
-]) satisfies Toolbox;
+  defineDynamicCategory({ name: '変数', custom: 'VARIABLE' }),
+  defineDynamicCategory({ name: '関数', custom: 'PROCEDURE' }),
+  categoryPin,
+]);

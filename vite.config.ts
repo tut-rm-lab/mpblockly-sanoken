@@ -1,10 +1,10 @@
 import react from '@vitejs/plugin-react';
-import type { UserConfig } from 'vite';
+import { defineConfig } from 'vite';
 
-export default {
+export default defineConfig({
   base: './',
   build: {
     outDir: 'dist-vite',
   },
   plugins: [react()],
-} satisfies UserConfig;
+});
