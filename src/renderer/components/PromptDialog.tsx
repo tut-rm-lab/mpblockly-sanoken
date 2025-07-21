@@ -46,6 +46,7 @@ export function PromptDialog({
             variant="standard"
             name="result"
             defaultValue={defaultValue}
+            fullWidth
             required
             autoFocus
           />
