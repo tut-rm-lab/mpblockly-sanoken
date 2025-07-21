@@ -1,7 +1,7 @@
 {
   "name": "mpblockly",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "./dist-tsc/main/index.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
-    "@serialport/parser-delimiter": "^13.0.0",
     "blockly": "^12.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
