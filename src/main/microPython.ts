@@ -181,7 +181,7 @@ export async function writeFileToMicroPython(dest: string, data: string) {
   await microPython.exec(
     `import json
 f=open('${dest}','wb')
-f.write(json.loads(r'${JSON.stringify(data)}'))
+f.write(json.loads(r'''${JSON.stringify(data)}'''))
 f.close()`,
   );
 
