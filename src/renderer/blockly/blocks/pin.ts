@@ -1,8 +1,6 @@
 import * as Blockly from 'blockly/core';
-import { pythonGenerator } from 'blockly/python';
+import { Order, pythonGenerator } from 'blockly/python';
 import { defineBlock, defineCategory } from '../utils';
-
-console.log(Blockly.Themes.Classic);
 
 const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
   Blockly.defineBlocksWithJsonArray([
@@ -11,9 +9,9 @@ const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
       message0: 'ピンID %1 に %2 という名前をつける',
       args0: [
         {
-          type: 'field_input',
+          type: 'input_value',
           name: 'ID',
-          text: '"LED"',
+          check: ['Number', 'String'],
         },
         {
           type: 'field_input',
@@ -23,12 +21,11 @@ const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
       ],
       previousStatement: null,
       nextStatement: null,
-      colour: 225,
     },
   ]);
 
   pythonGenerator.forBlock[type] = (block, generator) => {
-    const id = block.getFieldValue('ID');
+    const id = generator.valueToCode(block, 'ID', Order.ATOMIC);
     const name = block.getFieldValue('NAME');
 
     generator.provideFunction_(
@@ -36,8 +33,41 @@ const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
       'from machine import Pin',
     );
 
-    return `${name} = Pin(${id}, Pin.OUT)`;
+    return `${name} = Pin(${id}, Pin.OUT)\n`;
   };
 });
 
-export const categoryPin = defineCategory({ name: 'ピン' }, [definePin]);
+const setValuePin = defineBlock({ type: 'mpblockly_set_value_pin' }, (type) => {
+  Blockly.defineBlocksWithJsonArray([
+    {
+      type,
+      message0: 'ピン %1 を %2 に',
+      args0: [
+        {
+          type: 'field_input',
+          name: 'NAME',
+          text: 'led',
+        },
+        {
+          type: 'field_dropdown',
+          name: 'VALUE',
+          options: [
+            ['オン', 'ON'],
+            ['オフ', 'OFF'],
+          ],
+        },
+      ],
+      previousStatement: null,
+      nextStatement: null,
+    },
+  ]);
+
+  pythonGenerator.forBlock[type] = (block) => {
+    const name = block.getFieldValue('NAME');
+    const value = block.getFieldValue('VALUE');
+
+    return `${name}.value(${value === 'ON' ? 'True' : 'False'})\n`;
+  };
+});
+
+export default defineCategory({ name: 'ピン' }, [definePin, setValuePin]);

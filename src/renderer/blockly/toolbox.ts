@@ -1,4 +1,4 @@
-import { categoryPin } from './blocks/pin';
+import pin from './blocks/pin';
 import {
   defineBlock,
   defineCategory,
@@ -75,5 +75,5 @@ export default defineCategoryToolbox([
   ),
   defineDynamicCategory({ name: '変数', custom: 'VARIABLE' }),
   defineDynamicCategory({ name: '関数', custom: 'PROCEDURE' }),
-  categoryPin,
+  pin,
 ]);
