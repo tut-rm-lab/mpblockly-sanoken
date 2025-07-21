@@ -1,4 +1,5 @@
 import pin from './blocks/pin';
+import pwm from './blocks/pwm';
 import time from './blocks/time';
 import {
   defineBlock,
@@ -80,4 +81,5 @@ export default defineCategoryToolbox([
   defineSeparator(),
   time,
   pin,
+  pwm,
 ]);

@@ -134,8 +134,8 @@ export function defineBlock(
 ): Block {
   blockDefinition?.(options.type);
   return {
+    ...options,
     kind: 'block',
-    type: options.type,
   };
 }
 
@@ -146,7 +146,13 @@ export function defineSeparator(options?: Omit<Separator, 'kind'>): Separator {
   };
 }
 
-export function defineButton(options: Omit<Button, 'kind'>): Button {
+export function defineButton(
+  options: Omit<Button, 'kind'>,
+  callback: (button: Blockly.FlyoutButton) => void,
+): Button {
+  callOnWorkspaceInit.add((workspace) => {
+    workspace.registerButtonCallback(options.callbackkey, callback);
+  });
   return {
     ...options,
     kind: 'button',
