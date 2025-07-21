@@ -109,7 +109,7 @@ const pwmSetDuty = defineBlock(
       const pwm = generator.getVariableName(block.getFieldValue('PWM'));
       const duty = generator.valueToCode(block, 'DUTY', Order.ATOMIC);
 
-      return `${pwm}.duty_u16(${duty})\n`;
+      return `${pwm}.duty_u16(int(${duty}))\n`;
     };
   },
 );
