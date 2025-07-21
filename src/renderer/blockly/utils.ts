@@ -115,7 +115,13 @@ export function defineCategory(
 
 export function defineDynamicCategory(
   options: Omit<DynamicCategory, 'kind'>,
+  callback?: (workspace: Blockly.WorkspaceSvg) => FlyoutItem[],
 ): DynamicCategory {
+  if (callback) {
+    callOnWorkspaceInit.add((workspace) => {
+      workspace.registerToolboxCategoryCallback(options.custom, callback);
+    });
+  }
   return {
     ...options,
     kind: 'category',
@@ -153,3 +159,7 @@ export function defineLabel(options: Omit<Label, 'kind'>): Label {
     kind: 'label',
   };
 }
+
+export const callOnWorkspaceInit = new Set<
+  (workspace: Blockly.WorkspaceSvg) => void
+>();

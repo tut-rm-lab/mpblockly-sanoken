@@ -11,6 +11,7 @@ import {
 import { PromptDialog } from './PromptDialog';
 
 import 'blockly/blocks';
+import { callOnWorkspaceInit } from '../blockly/utils';
 
 interface BlocklyProps {
   ref: RefObject<Blockly.WorkspaceSvg | null>;
@@ -52,6 +53,9 @@ export const BlocklyEditor = memo(function BlocklyEditor({
       setPromptOpen(true);
     });
     const workspace = Blockly.inject(containerRef.current, options);
+    for (const callback of callOnWorkspaceInit) {
+      callback(workspace);
+    }
     ref.current = workspace;
 
     return () => {
