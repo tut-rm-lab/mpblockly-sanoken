@@ -11,7 +11,9 @@ type MakeUndefinedOptional<T> = PartialBy<
   }[keyof T]
 >;
 
-type FlyoutToolbox = Merge<
+export type Toolbox = FlyoutToolbox | CategoryToolbox;
+
+export type FlyoutToolbox = Merge<
   Blockly.utils.toolbox.ToolboxInfo,
   {
     kind: 'flyoutToolbox';
@@ -19,7 +21,7 @@ type FlyoutToolbox = Merge<
   }
 >;
 
-type CategoryToolbox = Merge<
+export type CategoryToolbox = Merge<
   Blockly.utils.toolbox.ToolboxInfo,
   {
     kind: 'categoryToolbox';
@@ -27,7 +29,7 @@ type CategoryToolbox = Merge<
   }
 >;
 
-type StaticCategory = Merge<
+export type StaticCategory = Merge<
   MakeUndefinedOptional<Blockly.utils.toolbox.StaticCategoryInfo>,
   {
     kind: 'category';
@@ -35,9 +37,9 @@ type StaticCategory = Merge<
   }
 >;
 
-type FlyoutItem = Block | Separator | Button | Label;
+export type FlyoutItem = Block | Separator | Button | Label;
 
-type Block = Merge<
+export type Block = Merge<
   Blockly.utils.toolbox.BlockInfo,
   {
     kind: 'block';
@@ -45,21 +47,21 @@ type Block = Merge<
   }
 >;
 
-type Separator = Merge<
+export type Separator = Merge<
   MakeUndefinedOptional<Blockly.utils.toolbox.SeparatorInfo>,
   {
     kind: 'sep';
   }
 >;
 
-type Button = Merge<
+export type Button = Merge<
   Blockly.utils.toolbox.ButtonInfo,
   {
     kind: 'button';
   }
 >;
 
-type Label = Merge<
+export type Label = Merge<
   MakeUndefinedOptional<Blockly.utils.toolbox.LabelInfo>,
   {
     kind: 'label';

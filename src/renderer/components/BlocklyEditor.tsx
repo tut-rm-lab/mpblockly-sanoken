@@ -1,5 +1,8 @@
 import * as Blockly from 'blockly/core';
+import * as Ja from 'blockly/msg/ja';
 import { memo, type RefObject, useEffect, useRef } from 'react';
+
+import 'blockly/blocks';
 
 interface BlocklyProps {
   ref: RefObject<Blockly.WorkspaceSvg | null>;
@@ -16,12 +19,18 @@ export const BlocklyEditor = memo(function BlocklyEditor({
     if (!containerRef.current) {
       return;
     }
+
+    Blockly.setLocale(Ja.default ?? Ja);
+    Blockly.dialog.setPrompt((message, _defaultValue, _callback) => {
+      window.alert(message);
+    });
     const workspace = Blockly.inject(containerRef.current, options);
     ref.current = workspace;
 
     return () => {
       ref.current = null;
       workspace.dispose();
+      Blockly.dialog.setPrompt(undefined);
     };
   }, [ref, options]);
 

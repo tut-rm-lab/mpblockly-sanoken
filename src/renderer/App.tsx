@@ -1,8 +1,8 @@
 import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import toolbox from './blockly';
+import { useEffect, useRef, useState } from 'react';
+import options from './blockly/options';
 import { BlocklyEditor } from './components/BlocklyEditor';
 import { useFileManager } from './hooks/useFileManager';
 import { useFlashToMicroPython } from './hooks/useFlashToMicroPython';
@@ -47,8 +47,6 @@ export function App() {
       workspace.removeChangeListener(listener);
     };
   }, []);
-
-  const options = useMemo(() => ({ toolbox }), []);
 
   return (
     <Stack
