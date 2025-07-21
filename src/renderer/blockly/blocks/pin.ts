@@ -1,11 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
-import {
-  defineBlock,
-  defineButton,
-  defineCategory,
-  defineDynamicCategory,
-} from '../utils';
+import { defineBlock, defineButton, defineCategory } from '../utils';
 
 const pinCreate = defineButton(
   { text: 'ピン変数の作成…', callbackkey: 'mpblockly_pin_create' },
