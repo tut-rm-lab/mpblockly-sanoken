@@ -7,7 +7,15 @@ export class MicroPython {
   async connect() {
     for (const { vendorId, productId, path } of await SerialPort.list()) {
       if (vendorId != null && productId != null) {
-        this.#port = new SerialPort({ path, baudRate: 115200 });
+        this.#port = await new Promise<SerialPort>((resolve, reject) => {
+          const port = new SerialPort({ path, baudRate: 115200 }, (error) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve(port);
+          });
+        });
         return;
       }
     }
