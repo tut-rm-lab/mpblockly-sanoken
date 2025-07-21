@@ -2,11 +2,9 @@ import pin from './blocks/pin';
 import time from './blocks/time';
 import {
   defineBlock,
-  defineButton,
   defineCategory,
   defineCategoryToolbox,
   defineDynamicCategory,
-  defineLabel,
   defineSeparator,
 } from './utils';
 

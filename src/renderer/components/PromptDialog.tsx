@@ -6,7 +6,7 @@ import {
   DialogContentText,
   TextField,
 } from '@mui/material';
-import { useCallback, type FormEvent } from 'react';
+import { type FormEvent, useCallback } from 'react';
 
 interface PromptDialogProps {
   open: boolean;
