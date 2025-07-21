@@ -4,7 +4,7 @@ import { defineBlock, defineCategory } from '../utils';
 
 console.log(Blockly.Themes.Classic);
 
-const definePin = defineBlock({ type: 'define_pin' }, (type) => {
+const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
   Blockly.defineBlocksWithJsonArray([
     {
       type,
@@ -31,7 +31,10 @@ const definePin = defineBlock({ type: 'define_pin' }, (type) => {
     const id = block.getFieldValue('ID');
     const name = block.getFieldValue('NAME');
 
-    generator.provideFunction_('import_pin', 'from machine import Pin');
+    generator.provideFunction_(
+      'mpblockly_import_pin',
+      'from machine import Pin',
+    );
 
     return `${name} = Pin(${id}, Pin.OUT)`;
   };
