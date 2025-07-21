@@ -2,7 +2,7 @@ import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
 import { defineBlock, defineCategory } from '../utils';
 
-const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
+const pinDefine = defineBlock({ type: 'mpblockly_pin_define' }, (type) => {
   Blockly.defineBlocksWithJsonArray([
     {
       type,
@@ -21,6 +21,7 @@ const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
       ],
       previousStatement: null,
       nextStatement: null,
+      colour: 15,
     },
   ]);
 
@@ -37,7 +38,7 @@ const definePin = defineBlock({ type: 'mpblockly_define_pin' }, (type) => {
   };
 });
 
-const setValuePin = defineBlock({ type: 'mpblockly_set_value_pin' }, (type) => {
+const pinSetValue = defineBlock({ type: 'mpblockly_pin_set_value' }, (type) => {
   Blockly.defineBlocksWithJsonArray([
     {
       type,
@@ -59,6 +60,7 @@ const setValuePin = defineBlock({ type: 'mpblockly_set_value_pin' }, (type) => {
       ],
       previousStatement: null,
       nextStatement: null,
+      colour: 15,
     },
   ]);
 
@@ -70,4 +72,4 @@ const setValuePin = defineBlock({ type: 'mpblockly_set_value_pin' }, (type) => {
   };
 });
 
-export default defineCategory({ name: 'ピン' }, [definePin, setValuePin]);
+export default defineCategory({ name: 'ピン' }, [pinDefine, pinSetValue]);

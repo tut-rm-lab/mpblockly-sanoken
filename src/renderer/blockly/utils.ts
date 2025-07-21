@@ -29,7 +29,7 @@ export type CategoryToolbox = Merge<
   }
 >;
 
-export type Category = StaticCategory | DynamicCategory;
+export type Category = StaticCategory | DynamicCategory | Separator;
 
 export type StaticCategory = Merge<
   MakeUndefinedOptional<Blockly.utils.toolbox.StaticCategoryInfo>,

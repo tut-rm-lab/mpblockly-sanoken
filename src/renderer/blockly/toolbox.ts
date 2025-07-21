@@ -1,9 +1,13 @@
 import pin from './blocks/pin';
+import time from './blocks/time';
 import {
   defineBlock,
+  defineButton,
   defineCategory,
   defineCategoryToolbox,
   defineDynamicCategory,
+  defineLabel,
+  defineSeparator,
 } from './utils';
 
 export default defineCategoryToolbox([
@@ -75,5 +79,7 @@ export default defineCategoryToolbox([
   ),
   defineDynamicCategory({ name: '変数', custom: 'VARIABLE' }),
   defineDynamicCategory({ name: '関数', custom: 'PROCEDURE' }),
+  defineSeparator(),
+  time,
   pin,
 ]);
