@@ -4,6 +4,15 @@
   "version": "0.1.1",
   "type": "module",
   "main": "./main/dist/src/index.js",
+  "build": {
+    "files": [
+      "main/dist/**/*.js",
+      "preload/dist/**/*.js",
+      "renderer/dist/**/*",
+      "LICENSE",
+      "NOTICE"
+    ]
+  },
   "scripts": {
     "dev": "tsc -b && electron .",
     "build": "tsc -b && vite build",
