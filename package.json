@@ -5,7 +5,7 @@
   "type": "module",
   "main": "./main/dist/src/index.js",
   "scripts": {
-    "dev": "tsc -b --noCheck && electron .",
+    "dev": "tsc -b && electron .",
     "build": "tsc -b && vite build",
     "preview": "electron .",
     "package": "tsc -b && vite build && electron-builder",

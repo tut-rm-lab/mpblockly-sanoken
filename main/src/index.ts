@@ -18,7 +18,7 @@ async function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      preload: resolve(app.getAppPath(), './main/dist/src/preload.cjs'),
+      preload: resolve(app.getAppPath(), './preload/dist/src/index.js'),
     },
   });
 
