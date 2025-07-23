@@ -2,6 +2,9 @@
   "compilerOptions": {
     "composite": true,
     "target": "ES2023",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "outDir": "${configDir}/dist",
     "strict": true,
     "skipLibCheck": true,
