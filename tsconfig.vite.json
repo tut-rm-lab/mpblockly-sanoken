@@ -5,7 +5,6 @@
     "target": "ES2023",
     "module": "Preserve",
     "noEmit": true,
-    "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true
   },
   "include": ["vite.config.ts"]

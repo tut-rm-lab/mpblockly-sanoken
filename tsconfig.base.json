@@ -4,6 +4,7 @@
     "target": "ES2023",
     "strict": true,
     "skipLibCheck": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true
   }
 }
