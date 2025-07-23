@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.1",
   "type": "module",
-  "main": "./dist-tsc/main/index.js",
+  "main": "./main/dist/src/index.js",
   "scripts": {
     "dev": "tsc -b --noCheck && electron .",
     "build": "tsc -b && vite build",

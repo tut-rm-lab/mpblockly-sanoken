@@ -18,7 +18,7 @@ async function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      preload: resolve(import.meta.dirname, '../preload/index.cjs'),
+      preload: resolve(app.getAppPath(), './preload/dist/src/index.js'),
     },
   });
 
@@ -26,7 +26,7 @@ async function createWindow() {
 
   if (app.isPackaged) {
     mainWindow.loadFile(
-      resolve(import.meta.dirname, '../../dist-vite/index.html'),
+      resolve(app.getAppPath(), './renderer/dist/index.html'),
     );
   } else {
     mainWindow.loadURL(await startViteServer());
