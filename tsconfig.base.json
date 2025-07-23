@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES2023",
+    "strict": true,
+    "skipLibCheck": true,
+    "moduleDetection": "force"
+  }
+}

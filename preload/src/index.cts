@@ -1,19 +1,20 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { ElectronAPI } from '../types/preload';
 
-contextBridge.exposeInMainWorld('electronAPI', {
-  openFile: (file) => ipcRenderer.invoke('open-file', file),
-  saveFile: (file, data) => ipcRenderer.invoke('save-file', file, data),
+const electronAPI = {
+  openFile: (file: string) => ipcRenderer.invoke('open-file', file),
+  saveFile: (file: string, data: string) =>
+    ipcRenderer.invoke('save-file', file, data),
   showOpenDialog: () => ipcRenderer.invoke('show-open-dialog'),
   showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
-  showInfoDialog: (message) => ipcRenderer.invoke('show-info-dialog', message),
-  showErrorDialog: (message) =>
+  showInfoDialog: (message: string) =>
+    ipcRenderer.invoke('show-info-dialog', message),
+  showErrorDialog: (message: string) =>
     ipcRenderer.invoke('show-error-dialog', message),
   showConfirmDialog: () => ipcRenderer.invoke('show-confirm-dialog'),
   closeWindow: () => ipcRenderer.invoke('close-window'),
-  flashToMicroPython: (code) =>
+  flashToMicroPython: (code: string) =>
     ipcRenderer.invoke('flash-to-micro-python', code),
-  onBeforeClose: (listener) => {
+  onBeforeClose: (listener: () => void) => {
     const wrapper = () => {
       listener();
     };
@@ -22,4 +23,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.off('before-close', wrapper);
     };
   },
-} satisfies ElectronAPI);
+};
+
+contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+
+export type ElectronAPI = typeof electronAPI;
