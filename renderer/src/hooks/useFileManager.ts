@@ -1,20 +1,22 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-interface FileManager<T> {
-  openFile: (file: string) => Promise<T>;
-  saveFile: (file: string, data: T) => Promise<void>;
-  getData: () => Promise<T>;
-  isDirty: (prev: T | null, cur: T) => boolean;
+interface FileManager<Handle, File> {
+  openFile: (handle: Handle) => Promise<File>;
+  saveFile: (handle: Handle, data: File) => Promise<void>;
+  getData: () => Promise<File>;
+  isDirty: (prev: File | null, cur: File) => boolean;
   closeWindow: () => Promise<void>;
   onBeforeClose: (listener: () => void) => () => void;
-  showOpenDialog: () => Promise<string | null>;
-  showSaveDialog: () => Promise<string | null>;
-  showConfirmDialog: () => Promise<boolean | null>;
+  showOpenDialog: () => Promise<Handle>;
+  showSaveDialog: () => Promise<Handle>;
+  showConfirmDialog: () => Promise<boolean>;
 }
 
-export function useFileManager<T>(fileManager: FileManager<T>) {
-  const prevPathRef = useRef<string>(null);
-  const prevDataRef = useRef<T>(null);
+export function useFileManager<Handle, File>(
+  fileManager: FileManager<Handle, File>,
+) {
+  const prevHandleRef = useRef<Handle>(null);
+  const prevFileRef = useRef<File>(null);
 
   const saveAs = useCallback(async () => {
     const path = await fileManager.showSaveDialog();
@@ -23,24 +25,24 @@ export function useFileManager<T>(fileManager: FileManager<T>) {
     }
     const data = await fileManager.getData();
     await fileManager.saveFile(path, data);
-    prevPathRef.current = path;
-    prevDataRef.current = data;
+    prevHandleRef.current = path;
+    prevFileRef.current = data;
     return true;
   }, [fileManager.showSaveDialog, fileManager.saveFile, fileManager.getData]);
 
   const save = useCallback(async () => {
-    if (prevPathRef.current == null) {
+    if (prevHandleRef.current == null) {
       return saveAs();
     }
     const data = await fileManager.getData();
-    await fileManager.saveFile(prevPathRef.current, data);
-    prevDataRef.current = data;
+    await fileManager.saveFile(prevHandleRef.current, data);
+    prevFileRef.current = data;
     return true;
   }, [saveAs, fileManager.saveFile, fileManager.getData]);
 
   const open = useCallback(async () => {
     const data = await fileManager.getData();
-    if (fileManager.isDirty(prevDataRef.current, data)) {
+    if (fileManager.isDirty(prevFileRef.current, data)) {
       const response = await fileManager.showConfirmDialog();
       if (response == null) {
         return;
@@ -56,8 +58,8 @@ export function useFileManager<T>(fileManager: FileManager<T>) {
       return;
     }
     const newData = await fileManager.openFile(path);
-    prevPathRef.current = path;
-    prevDataRef.current = newData;
+    prevHandleRef.current = path;
+    prevFileRef.current = newData;
     return newData;
   }, [
     save,
@@ -71,7 +73,7 @@ export function useFileManager<T>(fileManager: FileManager<T>) {
   useEffect(() => {
     const unsubscribe = fileManager.onBeforeClose(async () => {
       const data = await fileManager.getData();
-      if (!fileManager.isDirty(prevDataRef.current, data)) {
+      if (!fileManager.isDirty(prevFileRef.current, data)) {
         await fileManager.closeWindow();
         return;
       }

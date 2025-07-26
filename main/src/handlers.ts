@@ -24,7 +24,7 @@ export function saveFile(
 
 export async function showOpenDialog(
   event: IpcMainInvokeEvent,
-): Promise<string | null> {
+): Promise<string> {
   const { canceled, filePaths } = await dialog.showOpenDialog(
     getWindowFromEvent(event),
     {
@@ -36,12 +36,15 @@ export async function showOpenDialog(
       ],
     },
   );
-  return canceled ? null : filePaths[0];
+  if (canceled) {
+    throw new Error('canceled');
+  }
+  return filePaths[0];
 }
 
 export async function showSaveDialog(
   event: IpcMainInvokeEvent,
-): Promise<string | null> {
+): Promise<string> {
   const { canceled, filePath } = await dialog.showSaveDialog(
     getWindowFromEvent(event),
     {
@@ -53,7 +56,10 @@ export async function showSaveDialog(
       ],
     },
   );
-  return canceled ? null : filePath;
+  if (canceled) {
+    throw new Error('canceled');
+  }
+  return filePath;
 }
 
 export async function showInfoDialog(
@@ -91,7 +97,7 @@ export async function showConfirmDialog(
     case 1:
       return false;
     default:
-      return null;
+      throw new Error('canceled');
   }
 }
 

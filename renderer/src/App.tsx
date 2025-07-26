@@ -12,9 +12,13 @@ export function App() {
   const [tabIndex, setTabIndex] = useState(0);
   const [code, setCode] = useState('');
 
-  const { open, save, saveAs } = useFileManager<string>({
-    openFile: window.electronAPI.openFile,
-    saveFile: window.electronAPI.saveFile,
+  const { open, save, saveAs } = useFileManager({
+    openFile: (handle) => handle.getFile().then((file) => file.text()),
+    saveFile: async (handle, data) => {
+      const writable = await handle.createWritable();
+      await writable.write(data);
+      await writable.close();
+    },
     getData: async () => {
       if (!workspaceRef.current) {
         throw new Error('workspace is null');
@@ -24,11 +28,22 @@ export function App() {
       );
     },
     isDirty: (prev, cur) => (prev != null || cur !== '{}') && prev !== cur,
-    closeWindow: window.electronAPI.closeWindow,
-    onBeforeClose: window.electronAPI.onBeforeClose,
-    showOpenDialog: window.electronAPI.showOpenDialog,
-    showSaveDialog: window.electronAPI.showSaveDialog,
-    showConfirmDialog: window.electronAPI.showConfirmDialog,
+    closeWindow: async () => {},
+    onBeforeClose: () => {
+      const listener = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+      };
+      window.addEventListener('beforeunload', listener);
+      return () => {
+        window.removeEventListener('beforeunload', listener);
+      };
+    },
+    showOpenDialog: async () => {
+      const [handle] = await window.showOpenFilePicker();
+      return handle;
+    },
+    showSaveDialog: () => window.showSaveFilePicker(),
+    showConfirmDialog: async () => window.confirm('OK?'),
   });
   const { flash, isFlashing } = useFlashToMicroPython();
 
