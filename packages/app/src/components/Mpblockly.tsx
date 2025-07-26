@@ -3,9 +3,9 @@ import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
 import { useEffect, useRef, useState } from 'react';
 import options from '../blockly/options.js';
-import { BlocklyEditor } from './BlocklyEditor.js';
 import { useFileManager } from '../hooks/useFileManager.js';
 import { useFlashToMicroPython } from '../hooks/useFlashToMicroPython.js';
+import { BlocklyEditor } from './BlocklyEditor.js';
 
 export function Mpblockly() {
   const workspaceRef = useRef<Blockly.WorkspaceSvg>(null);

@@ -3,7 +3,6 @@
   "references": [
     { "path": "./main" },
     { "path": "./renderer" },
-    { "path": "./tsconfig.vite.json" },
     { "path": "./packages/app" },
     { "path": "./packages/preload" }
   ]

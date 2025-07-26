@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import {
   closeWindow,
@@ -12,7 +13,6 @@ import {
   showSaveDialog,
 } from './handlers.js';
 import { startViteServer } from './server.js';
-import { fileURLToPath } from 'node:url';
 
 async function createWindow() {
   const mainWindow = new BrowserWindow({

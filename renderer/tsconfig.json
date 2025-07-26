@@ -1,15 +1,7 @@
 {
-  "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.renderer.tsbuildinfo",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "module": "Preserve",
-    "jsx": "react-jsx",
-    "noEmit": true
-  },
-  "include": ["src"],
+  "files": [],
   "references": [
-    { "path": "../packages/app" },
-    { "path": "../packages/preload" }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
   ]
 }

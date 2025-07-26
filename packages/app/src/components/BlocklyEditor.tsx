@@ -8,8 +8,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { PromptDialog } from './PromptDialog.js';
 import { callOnWorkspaceInit } from '../blockly/utils.js';
+import { PromptDialog } from './PromptDialog.js';
 
 import 'blockly/blocks';
 

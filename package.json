@@ -10,9 +10,9 @@
   ],
   "scripts": {
     "dev": "tsc --build && cross-env NODE_ENV=development electron .",
-    "build": "tsc --build && vite build",
+    "build": "tsc --build && vite build renderer",
     "preview": "electron .",
-    "package": "tsc --build && vite build && electron-builder",
+    "package": "tsc --build && vite build renderer && electron-builder",
     "biome": "biome check"
   },
   "dependencies": {
