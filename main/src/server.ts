@@ -1,12 +1,7 @@
-import { resolve } from 'node:path';
-import { app } from 'electron';
+import type { InlineConfig } from 'vite';
 
-export async function startViteServer(): Promise<string> {
+export async function startViteServer(config: InlineConfig): Promise<string> {
   const { createServer, preview } = await import('vite');
-
-  const config = {
-    root: resolve(app.getAppPath(), './renderer'),
-  };
   const server = await (process.env.NODE_ENV === 'development'
     ? (await createServer(config)).listen()
     : preview(config));
@@ -14,6 +9,5 @@ export async function startViteServer(): Promise<string> {
   if (!url) {
     throw new Error('failed to start dev server');
   }
-
   return url;
 }

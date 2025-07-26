@@ -30,7 +30,11 @@ async function createWindow() {
       resolve(app.getAppPath(), './renderer/dist/index.html'),
     );
   } else {
-    mainWindow.loadURL(await startViteServer());
+    mainWindow.loadURL(
+      await startViteServer({
+        root: resolve(app.getAppPath(), './renderer'),
+      }),
+    );
   }
 
   mainWindow.on('close', (event) => {
