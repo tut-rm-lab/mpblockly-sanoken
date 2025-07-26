@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-interface FileManager<Handle, File> {
+export interface FileManager<Handle, File> {
   openFile: (handle: Handle) => Promise<File>;
   saveFile: (handle: Handle, data: File) => Promise<void>;
   getData: () => Promise<File>;
