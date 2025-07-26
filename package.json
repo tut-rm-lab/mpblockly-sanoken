@@ -14,10 +14,10 @@
     ]
   },
   "scripts": {
-    "dev": "tsc -b && electron .",
-    "build": "tsc -b && vite build",
+    "dev": "tsc --build && electron .",
+    "build": "tsc --build && vite build",
     "preview": "electron .",
-    "package": "tsc -b && vite build && electron-builder",
+    "package": "tsc --build && vite build && electron-builder",
     "biome": "biome check"
   },
   "dependencies": {

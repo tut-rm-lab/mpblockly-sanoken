@@ -1,8 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "declaration": true,
-    "verbatimModuleSyntax": false
-  }
+    "module": "CommonJS"
+  },
+  "include": ["src"]
 }

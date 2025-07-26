@@ -5,8 +5,8 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "Preserve",
     "jsx": "react-jsx",
-    "noEmit": true,
-    "allowImportingTsExtensions": true
+    "noEmit": true
   },
+  "include": ["src"],
   "references": [{ "path": "../main" }]
 }

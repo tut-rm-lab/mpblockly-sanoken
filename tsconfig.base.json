@@ -2,6 +2,7 @@
   "compilerOptions": {
     "composite": true,
     "target": "ES2023",
+    "module": "Node16",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
