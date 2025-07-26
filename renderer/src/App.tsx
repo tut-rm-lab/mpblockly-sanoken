@@ -28,22 +28,33 @@ export function App() {
       );
     },
     isDirty: (prev, cur) => (prev != null || cur !== '{}') && prev !== cur,
-    closeWindow: async () => {},
-    onBeforeClose: () => {
-      const listener = (e: BeforeUnloadEvent) => {
-        e.preventDefault();
-      };
-      window.addEventListener('beforeunload', listener);
-      return () => {
-        window.removeEventListener('beforeunload', listener);
-      };
-    },
+    closeWindow: window.electronAPI.closeWindow,
+    onBeforeClose: window.electronAPI.onBeforeClose,
     showOpenDialog: async () => {
-      const [handle] = await window.showOpenFilePicker();
+      const [handle] = await window.showOpenFilePicker({
+        types: [
+          {
+            description: 'mpblockly ワークスペース',
+            accept: {
+              'application/json': ['.mpblockly'],
+            },
+          },
+        ],
+      });
       return handle;
     },
-    showSaveDialog: () => window.showSaveFilePicker(),
-    showConfirmDialog: async () => window.confirm('OK?'),
+    showSaveDialog: () =>
+      window.showSaveFilePicker({
+        types: [
+          {
+            description: 'mpblockly ワークスペース',
+            accept: {
+              'application/json': ['.mpblockly'],
+            },
+          },
+        ],
+      }),
+    showConfirmDialog: window.electronAPI.showConfirmDialog,
   });
   const { flash, isFlashing } = useFlashToMicroPython();
 
