@@ -13,12 +13,8 @@ export function App() {
   const [code, setCode] = useState('');
 
   const { open, save, saveAs } = useFileManager({
-    openFile: (handle) => handle.getFile().then((file) => file.text()),
-    saveFile: async (handle, data) => {
-      const writable = await handle.createWritable();
-      await writable.write(data);
-      await writable.close();
-    },
+    openFile: window.electronAPI.openFile,
+    saveFile: window.electronAPI.saveFile,
     getData: async () => {
       if (!workspaceRef.current) {
         throw new Error('workspace is null');
@@ -30,30 +26,8 @@ export function App() {
     isDirty: (prev, cur) => (prev != null || cur !== '{}') && prev !== cur,
     closeWindow: window.electronAPI.closeWindow,
     onBeforeClose: window.electronAPI.onBeforeClose,
-    showOpenDialog: async () => {
-      const [handle] = await window.showOpenFilePicker({
-        types: [
-          {
-            description: 'mpblockly ワークスペース',
-            accept: {
-              'application/json': ['.mpblockly'],
-            },
-          },
-        ],
-      });
-      return handle;
-    },
-    showSaveDialog: () =>
-      window.showSaveFilePicker({
-        types: [
-          {
-            description: 'mpblockly ワークスペース',
-            accept: {
-              'application/json': ['.mpblockly'],
-            },
-          },
-        ],
-      }),
+    showOpenDialog: window.electronAPI.showOpenDialog,
+    showSaveDialog: window.electronAPI.showSaveDialog,
     showConfirmDialog: window.electronAPI.showConfirmDialog,
   });
   const { flash, isFlashing } = useFlashToMicroPython();
