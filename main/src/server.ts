@@ -1,6 +1,6 @@
 import type { InlineConfig } from 'vite';
 
-export async function startViteServer(config: InlineConfig): Promise<string> {
+export async function startViteServer(config?: InlineConfig): Promise<string> {
   const { createServer, preview } = await import('vite');
   const server = await (process.env.NODE_ENV === 'development'
     ? (await createServer(config)).listen()
