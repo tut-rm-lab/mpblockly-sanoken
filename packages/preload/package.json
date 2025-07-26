@@ -6,7 +6,7 @@
       "node": "./dist/src/index.js"
     }
   },
-  "devDependencies": {
+  "peerDependencies": {
     "electron": "^37.2.1"
   }
 }
