@@ -14,7 +14,7 @@
     ]
   },
   "scripts": {
-    "dev": "tsc --build && electron .",
+    "dev": "tsc --build && cross-env NODE_ENV=development electron .",
     "build": "tsc --build && vite build",
     "preview": "electron .",
     "package": "tsc --build && vite build && electron-builder",
