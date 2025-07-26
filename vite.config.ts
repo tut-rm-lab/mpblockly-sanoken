@@ -5,4 +5,7 @@ export default defineConfig({
   root: './renderer',
   base: './',
   plugins: [react()],
+  resolve: {
+    conditions: ['source'],
+  },
 });

@@ -1,4 +1,4 @@
-import type { ElectronAPI } from '../../preload/src/index';
+import type { ElectronAPI } from '@mpblockly/preload';
 
 declare global {
   interface Window {

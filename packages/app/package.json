@@ -1,0 +1,22 @@
+{
+  "name": "@mpblockly/app",
+  "type": "module",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./dist/src/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mpblockly/preload": "*",
+    "@mui/icons-material": "^7.2.0",
+    "@mui/material": "^7.2.0",
+    "blockly": "^12.2.0",
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8"
+  }
+}

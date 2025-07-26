@@ -1,5 +1,4 @@
-import electron = require('electron');
-const { contextBridge, ipcRenderer } = electron;
+import { contextBridge, ipcRenderer } from 'electron';
 
 const electronAPI = {
   openFile: (file: string): Promise<string> =>

@@ -12,13 +12,14 @@ import {
   showSaveDialog,
 } from './handlers.js';
 import { startViteServer } from './server.js';
+import { fileURLToPath } from 'node:url';
 
 async function createWindow() {
   const mainWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      preload: resolve(app.getAppPath(), './preload/dist/src/index.js'),
+      preload: fileURLToPath(import.meta.resolve('@mpblockly/preload')),
     },
   });
 

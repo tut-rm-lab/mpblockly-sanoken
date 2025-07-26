@@ -1,0 +1,12 @@
+{
+  "name": "@mpblockly/preload",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "node": "./dist/src/index.js"
+    }
+  },
+  "devDependencies": {
+    "electron": "^37.2.1"
+  }
+}

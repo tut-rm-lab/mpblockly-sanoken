@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
-import { defineBlock, defineCategory } from '../utils';
+import { defineBlock, defineCategory } from '../utils.js';
 
 const timeSleep = defineBlock({ type: 'mpblockly_time_sleep' }, (type) => {
   Blockly.defineBlocksWithJsonArray([

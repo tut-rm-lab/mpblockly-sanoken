@@ -8,5 +8,8 @@
     "noEmit": true
   },
   "include": ["src"],
-  "references": [{ "path": "../main" }]
+  "references": [
+    { "path": "../packages/app" },
+    { "path": "../packages/preload" }
+  ]
 }

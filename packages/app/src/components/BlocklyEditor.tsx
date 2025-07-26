@@ -8,10 +8,10 @@ import {
   useRef,
   useState,
 } from 'react';
-import { PromptDialog } from './PromptDialog';
+import { PromptDialog } from './PromptDialog.js';
+import { callOnWorkspaceInit } from '../blockly/utils.js';
 
 import 'blockly/blocks';
-import { callOnWorkspaceInit } from '../blockly/utils';
 
 interface BlocklyProps {
   ref: RefObject<Blockly.WorkspaceSvg | null>;

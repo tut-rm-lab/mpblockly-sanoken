@@ -1,13 +1,13 @@
-import pin from './blocks/pin';
-import pwm from './blocks/pwm';
-import time from './blocks/time';
+import pin from './blocks/pin.js';
+import pwm from './blocks/pwm.js';
+import time from './blocks/time.js';
 import {
   defineBlock,
   defineCategory,
   defineCategoryToolbox,
   defineDynamicCategory,
   defineSeparator,
-} from './utils';
+} from './utils.js';
 
 export default defineCategoryToolbox([
   defineCategory(

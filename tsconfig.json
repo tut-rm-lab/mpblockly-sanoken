@@ -2,8 +2,9 @@
   "files": [],
   "references": [
     { "path": "./main" },
-    { "path": "./preload" },
     { "path": "./renderer" },
-    { "path": "./tsconfig.vite.json" }
+    { "path": "./tsconfig.vite.json" },
+    { "path": "./packages/app" },
+    { "path": "./packages/preload" }
   ]
 }
