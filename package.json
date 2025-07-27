@@ -18,7 +18,8 @@
     "build": "tsc --build && vite build renderer",
     "preview": "electron .",
     "package": "tsc --build && vite build renderer && electron-builder",
-    "biome": "biome check"
+    "biome": "biome check",
+    "preinstall": "npx only-allow npm"
   },
   "workspaces": [
     "packages/app",
