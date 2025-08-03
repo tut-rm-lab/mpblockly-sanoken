@@ -26,6 +26,7 @@
     "packages/preload"
   ],
   "dependencies": {
+    "@blockly/field-colour": "^6.0.4",
     "@fontsource/roboto": "^5.2.6",
     "@mpblockly/app": "*",
     "@mpblockly/preload": "*",
