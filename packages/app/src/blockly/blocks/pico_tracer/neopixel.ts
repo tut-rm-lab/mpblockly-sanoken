@@ -20,12 +20,13 @@ colourRgb.installBlock({
     python: pythonGenerator
 });
 
-const hexToRgb = Blockly.utils.colour.hexToRgb;
-const parseColour = Blockly.utils.colour.parse;
+// const hexToRgb = Blockly.utils.colour.hexToRgb;
+// const parseColour = Blockly.utils.colour.parse;
 
 const hexToRgbInstr = (hex: string): string =>
     `(lambda c: (int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16)))(${hex})`;
 
+/* 無駄の極み */
 const rgbInstrToHex = (r: string, g: string, b: string): string => {
     const rn = Number(r);
     const gn = Number(g);
@@ -101,7 +102,7 @@ const colourRgbBlock = defineBlock({
         const r = generator.valueToCode(block, 'RED', Order.ATOMIC);
         const g = generator.valueToCode(block, 'GREEN', Order.ATOMIC);
         const b = generator.valueToCode(block, 'BLUE', Order.ATOMIC);
-        const code = `(${r}, ${g}, ${b})`;
+        const code = `${rgbInstrToHex(r, g, b)}`;
         return [code, Order.FUNCTION_CALL];
     };
 });
@@ -145,7 +146,7 @@ const setNeoPixelColor = defineBlock(
                 ],
                 previousStatement: null,
                 nextStatement: null,
-                colour: 165,
+                style: 'colour_blocks',
             },
         ]);
 
@@ -187,7 +188,7 @@ const setAllNeoPixelColor = defineBlock(
                 ],
                 previousStatement: null,
                 nextStatement: null,
-                colour: 165,
+                style: 'colour_blocks',
             },
         ]);
 
@@ -207,7 +208,7 @@ const showNeoPixel = defineBlock({ type: 'mpblockly_show_neopixel' }, (type) => 
             message0: 'カラーLED群に設定を書き込む',
             previousStatement: null,
             nextStatement: null,
-            colour: 165,
+            style: 'colour_blocks',
         },
     ]);
 
@@ -226,7 +227,7 @@ const allOffNeoPixel = defineBlock({ type: 'mpblockly_all_off_neopixel' }, (type
             message0: '全てのカラーLEDを消灯する',
             previousStatement: null,
             nextStatement: null,
-            colour: 165,
+            style: 'colour_blocks',
         },
     ]);
 
@@ -238,8 +239,8 @@ const allOffNeoPixel = defineBlock({ type: 'mpblockly_all_off_neopixel' }, (type
     };
 });
 
-
 export default defineCategory({ name: 'カラーLED' }, [
+    colourRgbBlock,
     colourRandomBlock,
     setNeoPixelColor,
     setAllNeoPixelColor,
