@@ -8,6 +8,8 @@ import {
   defineDynamicCategory,
   defineSeparator,
 } from './utils.js';
+import led from './blocks/pico_tracer/led.js';
+import neopixel from './blocks/pico_tracer/neopixel.js';
 
 export default defineCategoryToolbox([
   defineCategory(
@@ -71,4 +73,6 @@ export default defineCategoryToolbox([
   time,
   pin,
   pwm,
+  led,
+  neopixel
 ]);
