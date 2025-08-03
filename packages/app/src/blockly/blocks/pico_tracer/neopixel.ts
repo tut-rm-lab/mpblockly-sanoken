@@ -133,7 +133,7 @@ const setNeoPixelColor = defineBlock(
         Blockly.defineBlocksWithJsonArray([
             {
                 type,
-                message0: '%1 番目のLEDの色を %2 に設定する',
+                message0: '%1 番目のカラーLEDの色を %2 に設定する',
                 args0: [
                     {
                         type: 'input_value',
