@@ -10,6 +10,7 @@ import {
 } from './utils.js';
 import led from './blocks/pico_tracer/led.js';
 import neopixel from './blocks/pico_tracer/neopixel.js';
+import sensor from './blocks/pico_tracer/sensor.js';
 
 export default defineCategoryToolbox([
   defineCategory(
@@ -73,6 +74,8 @@ export default defineCategoryToolbox([
   time,
   pin,
   pwm,
+  defineSeparator(),
   led,
-  neopixel
+  neopixel,
+  sensor
 ]);
