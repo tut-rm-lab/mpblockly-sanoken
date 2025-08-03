@@ -153,7 +153,7 @@ const setNeoPixelColor = defineBlock(
         pythonGenerator.forBlock[type] = (block, generator) => {
             const num = generator.valueToCode(block, 'NUM', Order.ATOMIC);
             const zeroBasedNum = Number(num) - 1; // Convert to zero-based index
-            const colour = generator.valueToCode(block, 'COLOUR', Order.ATOMIC);
+            const colour = generator.valueToCode(block, 'COLOUR', Order.ATOMIC); // "'#~~~~~~'" の形になる 中身だけ取り出せないっぽいからシングルクォートを自分で除去する必要ある あとで
             generator.provideFunction_('mpblockly_import_neopixel', 'import neopixel');
             generator.provideFunction_('mpblockly_import_pin', 'from machine import Pin',);
             generator.provideFunction_('mpblockly_neopixel_instance', 'np = neopixel.NeoPixel(machine.Pin(22), 3)');
