@@ -44,7 +44,7 @@ const readLimitSwitch = defineBlock({ type: 'mpblockly_read_limit_switch' }, (ty
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '%1 のリミットスイッチの状態を読み取る',
+            message0: '%1 のリミットスイッチの状態',
             args0: [
                 {
                     type: 'field_dropdown',
@@ -76,7 +76,7 @@ const readToFSensorMillimeters = defineBlock({ type: 'mpblockly_read_tof_sensor'
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '%1 の距離センサの値をミリメートルの単位で読み取る',
+            message0: '%1 の距離センサ値(mm)',
             args0: [
                 {
                     type: 'field_dropdown',
@@ -116,7 +116,7 @@ const readReflectiveSensorADC = defineBlock({ type: 'mpblockly_read_reflective_s
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '%1 のラインセンサのADC値を読み取る',
+            message0: '%1 のラインセンサのADC値',
             args0: [
                 {
                     type: 'field_dropdown',
@@ -154,7 +154,7 @@ const readReflectiveSensorDigital = defineBlock({ type: 'mpblockly_read_reflecti
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '%1 のラインセンサのデジタル値を読み取る',
+            message0: '%1 のラインセンサのデジタル値',
             args0: [
                 {
                     type: 'field_dropdown',

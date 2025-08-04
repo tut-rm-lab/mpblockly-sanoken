@@ -133,7 +133,7 @@ const setNeoPixelColor = defineBlock(
         Blockly.defineBlocksWithJsonArray([
             {
                 type,
-                message0: '%1 番目のカラーLEDの色を %2 に設定する',
+                message0: '%1 番目のカラーLEDの色を %2 に設定',
                 args0: [
                     {
                         type: 'input_value',
@@ -179,7 +179,7 @@ const setAllNeoPixelColor = defineBlock(
         Blockly.defineBlocksWithJsonArray([
             {
                 type,
-                message0: '全てのカラーLEDの色を %1 に設定する',
+                message0: '全てのカラーLEDの色を %1 に設定',
                 args0: [
                     {
                         type: 'input_value',
@@ -224,7 +224,7 @@ const allOffNeoPixel = defineBlock({ type: 'mpblockly_all_off_neopixel' }, (type
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '全てのカラーLEDを消灯する',
+            message0: '全てのカラーLEDを消灯',
             previousStatement: null,
             nextStatement: null,
             style: 'colour_blocks',

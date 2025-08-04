@@ -17,7 +17,7 @@ const readEncoderDegree = defineBlock({ type: 'mpblockly_read_encoder_degree' },
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '%1 のエンコーダの角度を読み取る',
+            message0: '%1 のエンコーダ角度(Degree)',
             args0: [
                 {
                     type: 'field_dropdown',
@@ -53,7 +53,7 @@ const readMotorCurrent = defineBlock({ type: 'mpblockly_read_motor_current' }, (
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '%1 の電流を読み取る(mA)',
+            message0: '%1 の電流(mA)',
             args0: [
                 {
                     type: 'field_dropdown',

@@ -6,7 +6,7 @@ const turnOnBuiltinLED = defineBlock({ type: 'mpblockly_turn_on_builtin_led' }, 
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '内蔵LEDを点灯する',
+            message0: '内蔵LEDを点灯',
             previousStatement: null,
             nextStatement: null,
             colour: 165,
@@ -24,7 +24,7 @@ const turnOffBuiltinLED = defineBlock({ type: 'mpblockly_turn_off_builtin_led' }
     Blockly.defineBlocksWithJsonArray([
         {
             type,
-            message0: '内蔵LEDを消灯する',
+            message0: '内蔵LEDを消灯',
             previousStatement: null,
             nextStatement: null,
             colour: 165,

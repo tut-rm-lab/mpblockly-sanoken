@@ -18,7 +18,7 @@ const timeSleep = defineBlock({
   Blockly.defineBlocksWithJsonArray([
     {
       type,
-      message0: '%1 秒待機する',
+      message0: '%1 秒待機',
       args0: [
         {
           type: 'input_value',
@@ -57,7 +57,7 @@ const timeSleepMs = defineBlock(
     Blockly.defineBlocksWithJsonArray([
       {
         type,
-        message0: '%1 ミリ秒待機する',
+        message0: '%1 ミリ秒待機',
         args0: [
           {
             type: 'input_value',
@@ -96,7 +96,7 @@ const timeSleepUs = defineBlock(
     Blockly.defineBlocksWithJsonArray([
       {
         type,
-        message0: '%1 マイクロ秒待機する',
+        message0: '%1 マイクロ秒待機',
         args0: [
           {
             type: 'input_value',
