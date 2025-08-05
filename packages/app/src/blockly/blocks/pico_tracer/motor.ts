@@ -82,7 +82,19 @@ const readMotorCurrent = defineBlock({ type: 'mpblockly_read_motor_current' }, (
     };
 });
 
-const setMotorPower = defineBlock({ type: 'mpblockly_set_motor_power' }, (type) => {
+const setMotorPower = defineBlock({
+    type: 'mpblockly_set_motor_power',
+    inputs: {
+        POWER: {
+            shadow: {
+                type: 'math_number',
+                fields: {
+                    NUM: 0,
+                },
+            },
+        },
+    }
+}, (type) => {
     Blockly.defineBlocksWithJsonArray([
         {
             type,
@@ -99,11 +111,8 @@ const setMotorPower = defineBlock({ type: 'mpblockly_set_motor_power' }, (type) 
                     ],
                 },
                 {
-                    type: 'field_number',
+                    type: 'input_value',
                     name: 'POWER',
-                    value: 0,
-                    min: -100,
-                    max: 100,
                 },
             ],
             previousStatement: null,
@@ -114,7 +123,7 @@ const setMotorPower = defineBlock({ type: 'mpblockly_set_motor_power' }, (type) 
     ]);
     pythonGenerator.forBlock[type] = (block, generator) => {
         const port = block.getFieldValue('MOTOR_PORT');
-        const power = block.getFieldValue('POWER');
+        const power = generator.valueToCode(block, 'POWER', Order.ATOMIC);
 
         generator.provideFunction_('mpblockly_import_thread', 'import _thread');
         generator.provideFunction_('mpblockly_import_motor_control', 'import motor_control');
