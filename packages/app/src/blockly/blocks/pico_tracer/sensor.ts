@@ -40,6 +40,22 @@ const grovePorts: GrovePorts = {
     }
 };
 
+const readBootselButton = defineBlock({ type: 'mpblockly_read_bootsel_button' }, (type) => {
+    Blockly.defineBlocksWithJsonArray([
+        {
+            type,
+            message0: 'BOOTSELボタンの状態',
+            output: 'Boolean',
+            colour: 15,
+            tooltip: 'BOOTSELボタンが押されている時に真を返します。',
+        },
+    ]);
+    pythonGenerator.forBlock[type] = (block, generator) => {
+        const code = `rp2.bootsel_button()`;
+        return [code, Order.FUNCTION_CALL];
+    };
+});
+
 const readLimitSwitch = defineBlock({ type: 'mpblockly_read_limit_switch' }, (type) => {
     Blockly.defineBlocksWithJsonArray([
         {
@@ -186,4 +202,4 @@ const readReflectiveSensorDigital = defineBlock({ type: 'mpblockly_read_reflecti
     };
 });
 
-export default defineCategory({ name: 'センサ' }, [readLimitSwitch, readToFSensorMillimeters, readReflectiveSensorADC, readReflectiveSensorDigital]);
+export default defineCategory({ name: 'センサ' }, [readBootselButton, readLimitSwitch, readToFSensorMillimeters, readReflectiveSensorADC, readReflectiveSensorDigital]);
